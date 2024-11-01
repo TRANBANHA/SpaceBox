@@ -21,7 +21,6 @@
             }
 
             body{
-                /* font-family: Arial, Helvetica, sans-serif; */
                 font-family: 'Poppins', sans-serif;
             }
 
@@ -40,8 +39,6 @@
             }
             
 
-            
-
         </style>
     </head>
     <body>
@@ -49,5 +46,6 @@
         <section id="myLayout" class="flex-col">
             {{ $slot }}
         </section>
+
     </body>
 </html>

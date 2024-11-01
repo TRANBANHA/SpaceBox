@@ -19,7 +19,7 @@
                     <input type="Submit" value="Đăng Nhập">
                 </div>
                 <div class="text">
-                    <h3>Chưa có tài khoản? <a href="{{ route('auth.register') }}">Đăng ký ngay</a></h3>
+                    <h3>Chưa có tài khoản? <a href="{{ route('spacebox.register') }}">Đăng ký ngay</a></h3>
                 </div>
             </form>
         </div>

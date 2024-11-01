@@ -8,24 +8,25 @@
     <div class="wrapper flex-row">
         <div class="auth-form">
             <h2>Đăng ký tài khoản</h2>
-            <form action="#">
+            <form action="{{ route('spacebox.register.auth') }}" method="POST">
+                @csrf
                 <div class="input-box">
-                    <input id="name" name="name" type="text" placeholder="Nhập Họ và Tên" required>
+                    <input id="username" name="username" class="form-control" type="text" placeholder="Nhập tên người dùng" required>
                 </div>
                 <div class="input-box">
-                    <input id="email" name="email" type="text" placeholder="Nhập Email mà bạn sử dụng" required>
+                    <input id="email" name="email" class="form-control" type="email" placeholder="Nhập email của bạn" required>
                 </div>
                 <div class="input-box">
-                    <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" required>
+                    <input id="password" name="password" class="form-control" type="password" placeholder="Nhập mật khẩu" required>
                 </div>
-                <div class="input-box">
-                    <input id="re-password" name="re_password" type="password" placeholder="Nhập lại mật khẩu" required>
-                </div>
+                <!-- <div class="input-box">
+                    <input id="re-password" name="re_password" class="form-control"> type="password" placeholder="Nhập lại mật khẩu" required>
+                </div> -->
                 <div class="input-box button">
                     <input type="Submit" value="Đăng Ký">
                 </div>
                 <div class="text">
-                    <h3>Đã có tài khoản? <a href="{{ route('auth.login') }}">Đăng nhập ngay</a></h3>
+                    <h3>Đã có tài khoản? <a href="{{ route('spacebox.login') }}">Đăng nhập ngay</a></h3>
                 </div>
             </form>
         </div>
