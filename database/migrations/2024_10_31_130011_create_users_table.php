@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('password');
             $table->string('username');
             $table->text('img_path')->nullable();
-            $table->unsignedBigInteger('role_id')->default(2); // Người dùng mới mặc định quyền là Normal
+            $table->boolean('gender')->default(true); // Mặc định true là nam
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('role_id')->default(3);  // Người dùng mới mặc định quyền là Normal
+            $table->timestamp('email_verified_at')->nullable(); 
+
             $table->timestamps(); 
             $table->softDeletes();
 

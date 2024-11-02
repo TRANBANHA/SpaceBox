@@ -7,8 +7,8 @@
             <a href="/spacebox" class="logo-home">SpaceBox</a>
         </div>
         <div class="action-auth flex-row">
-            <a class="link-auth" href="{{ route('spacebox.login') }}">Đăng nhập</a>
-            <a class="link-auth" href="{{ route('spacebox.register') }}">Đăng ký</a>
+            <a class="link-auth" href="{{ route('account.login') }}">Đăng nhập</a>
+            <a class="link-auth" href="{{ route('account.register') }}">Đăng ký</a>
         </div>
     </div>
 </section>

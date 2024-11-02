@@ -2,7 +2,7 @@
 
 .wrapper{
   flex-grow: 1;
-  padding: 50px 70px;
+  padding: 30px 70px;
   align-items: center;
   justify-content: space-around;
   background-color: #0f8fffeb;
@@ -13,7 +13,7 @@
   max-width: 400px;
   width: 100%;
   background: #fff;
-  padding: 34px;
+  padding: 25px 34px;
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
 }
@@ -37,23 +37,44 @@
 .auth-form form{
   margin-top: 30px;
 }
-.auth-form form .input-box{
+
+.input-box{
   height: 52px;
   margin: 18px 0;
-}
-form .input-box input{
-  height: 100%;
-  width: 100%;
-  outline: none;
-  padding: 0 15px;
-  font-size: 17px;
-  font-weight: 400;
-  color: #333;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   border: 1.5px solid #C7BEBE;
   border-bottom-width: 2.5px;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
+
+
+form .input-box .form-control{
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  font-size: 17px;
+  font-weight: 400;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.input-box i{
+  position: absolute;
+  right: 50px;
+  font-size: 14px;
+  color: #4070f4;
+  margin: 0 2px 0 0;
+  cursor: pointer;
+}
+
+
+
 .input-box input:focus,
 .input-box input:valid{
   border-color: #4070f4;
@@ -66,19 +87,30 @@ form h3{
   color: #707070;
   font-size: 14px;
   font-weight: 500;
-  margin-left: 10px;
 }
-.input-box.button input{
+.button-box{
+  height: 52px;
+  border: none;
+  margin: 10px 0;
+}
+
+.button-box input{
+  width: 100%;
+  height: 100%;
   color: #fff;
   letter-spacing: 1px;
-  border: none;
   background: #4070f4;
   cursor: pointer;
+  text-align: center;
+  border-radius: 6px;
   font-weight: bold;
+  margin-top: 2px;
+  font-size: 20px;
 }
-.input-box.button input:hover{
-  background: #0e4bf1;
-}
+
+
+
+
 form .text h3{
  color: #333;
  width: 100%;
@@ -93,6 +125,12 @@ form .text h3 a:hover{
 }
 
 
+
+.auth-error{
+  color: red; 
+  display: none;
+  margin: 3px 0 0 3px;
+}
 
 
 .content-demo {
@@ -133,4 +171,8 @@ form .text h3 a:hover{
   .content-demo img {
       max-width: 90%; /* Giảm kích thước hình ảnh trên màn hình nhỏ */
   }
+
+  
 }
+
+
