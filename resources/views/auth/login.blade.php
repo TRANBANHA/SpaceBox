@@ -2,16 +2,18 @@
 <x-my-layout>
     <x-slot name="linkcss">
         <link rel="stylesheet" href="{{ url('assets/css/auth/auth.css') }}">
+        <link rel="stylesheet" href="{{ url('assets/css/auth/modal-notifications.css') }}">
     </x-slot>
 
     @include('components.header')
     <div class="wrapper flex-row">
         <div class="auth-form">
+           
             <h2>Đăng nhập</h2>
-            <form action="{{ route('account.login.auth') }}" method="POST">
+            <form  id="loginForm" action="{{ route('account.login.auth') }}" method="POST">
                 @csrf
                 <div class="input-box">
-                    <input id="email" name="email" class="form-control" type="email" placeholder="Nhập email của bạn" required>
+                    <input value="{{ old('email')}}" id="email" name="email" class="form-control" type="email" placeholder="Nhập email của bạn" required>
                 </div>
                 <div class="input-box">
                     <input id="password" name="password" class="form-control"  type="password" placeholder="Nhập mật khẩu" required>
@@ -29,4 +31,11 @@
             <img src="{{ url('assets/images/demo.jpg') }}" alt="">
         </div>
     </div>
+    @if(session('success'))
+        @include('auth.modal-success')
+    @endif
+    @if(session('errors'))
+        @include('auth.modal-errors')
+    @endif
+    
 </x-my-layout>

@@ -23,8 +23,22 @@ class RegisterRequest extends FormRequest
     {
         return [
             'username' => 'required|string|max:255',
-            'email' => 'required|string|unique:users,email',
-            'password' => 'required|string'
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string',
+            'password_confirmation' => 'required|same:password',
+        ];
+    }
+    
+
+    public function messages()
+    {
+        return [
+            'username.required' => 'Vui lòng nhập tên của bạn.',
+            'email.required' => 'Vui lòng nhập email của bạn.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email này đã được đăng ký.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password_confirmation' => 'Mật khẩu không trùng khớp.'
         ];
     }
 }

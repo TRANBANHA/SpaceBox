@@ -1,0 +1,83 @@
+.modal {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+}
+
+
+
+.modal.active {
+    display: flex; 
+}
+  
+.modal-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 535px;
+    width: 100%;
+    padding: 30px 20px 20px;
+    border-radius: 18px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transform: scale(1.1); /* Tạo hiệu ứng zoom */
+    transition: transform 0.3s ease;
+}
+  
+.modal.active .modal-box {
+    transform: scale(1); /* Hiệu ứng zoom khi hiển thị */
+}
+  
+  
+  
+.overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+}
+    
+.modal-box i{
+    font-size: 55px;
+    color: #0090ff;
+}
+
+.modal-box h2{
+    text-align: center;
+    margin-top: 10px;
+    color: #0090ff;
+}
+.modal-box h3{
+    text-align: center;
+    font-weight: 100;
+    margin: 15px 0;
+    font-size: 15px;
+    color: #525252;
+}
+
+
+.modal-box .close-btn{
+    background-color: #0090ff;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.modalError .modal-box h2{
+    color: #ff3300;
+}
+
+.modalError .modal-box i{
+    color: #ff3300;
+}
+.modalError .modal-box .close-btn{
+
+    background-color: #ff3300;
+}

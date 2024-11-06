@@ -4,56 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác thực Email</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f6f6f6;
-            color: #333;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .container .email-title{
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        h1 {
-            color: #0097ff;
-            text-transform: uppercase;
-        }
-        .button {
-            display: inline-block;
-            padding: 10px 15px;
-            color: #fff;
-            background-color: #0097ff;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="email-title">
-            <h3>Xin chào</h3>
-            <h1>{{ $account->username }}</h1>
-        </div>
-        <p>Cảm ơn bạn đã đăng ký sử dụng SpaceBox!</p>
-        <p>Vui lòng xác minh địa chỉ email của bạn bằng cách nhấp vào nút bên dưới:</p>
-        <a href="{{ route('account.verify', $account->email )}} " class="button">Xác thực ngay</a>
-        <p>Nếu bạn không tạo tài khoản, bạn không cần thực hiện thêm hành động nào nữa.</p>
+<div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; font-family: Arial, sans-serif; color: #333;">
+    <div class="email-title" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; font-size: 24px; color: #333;">Xin chào</h3>
+        <h1 style="margin: 10px 0; font-size: 28px; color: #4070f4;">{{ $account->username }}</h1>
     </div>
+    <p style="font-size: 16px; line-height: 1.5; color: #555;">Cảm ơn bạn đã đăng ký sử dụng SpaceBox!</p>
+    <p style="font-size: 16px; line-height: 1.5; color: #555;">Vui lòng xác minh địa chỉ email của bạn bằng cách nhấp vào nút bên dưới:</p>
+    <a href="{{ route('account.verify', $account->email )}}" style="display: inline-block; padding: 12px 24px; margin: 20px 0; font-size: 16px; color: #fff; background-color: #4070f4; text-decoration: none; border-radius: 6px; text-align: center;">Xác thực ngay</a>
+    <p style="font-size: 16px; line-height: 1.5; color: #555;">Nếu bạn không tạo tài khoản, bạn không cần thực hiện thêm hành động nào nữa.</p>
+</div>
+
 </body>
 </html>

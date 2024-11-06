@@ -128,7 +128,7 @@ form .text h3 a:hover{
 
 .auth-error{
   color: red; 
-  display: none;
+  /* display: none; */
   margin: 3px 0 0 3px;
 }
 

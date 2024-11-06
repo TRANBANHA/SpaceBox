@@ -6,12 +6,6 @@ use App\Http\Controllers\Web\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
-// Route::get('/spacebox', function () {
-//     return view('home.index');
-// });
-
-
-
 
 Route::group(['prefix' => 'account'], function(){
     Route::get('/register', [AccountController::class, 'registerForm'])->name('account.register');
