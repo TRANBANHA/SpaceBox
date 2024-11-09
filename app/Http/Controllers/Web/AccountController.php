@@ -8,8 +8,8 @@ use App\Http\Requests\Web\Account\RegisterRequest;
 use App\Mail\VerifyAccount;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Support\Facades\Auth;
 use Mail;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
@@ -19,6 +19,8 @@ class AccountController extends Controller
         $this->userService = $userService;
     }
 
+
+
     public function registerForm(){
         return view('auth.register');
     }
@@ -26,15 +28,16 @@ class AccountController extends Controller
         return view('auth.login');
     }
 
+    
 
     public function registerAction(RegisterRequest $registerRequest)
     {
-        $request = $registerRequest->validated();   
+        $credentials = $registerRequest->validated();   
 
-        $acc = $this->userService->create_user($request);
+        $acc = $this->userService->register_user($credentials);
 
         if ($acc) {
-            Mail::to($request['email'])->send(new VerifyAccount($acc));
+            Mail::to($credentials['email'])->send(new VerifyAccount($acc));
 
             return redirect()->back()->with('success', [
                 'title' => 'Đăng ký tài khoản thành công',
@@ -73,25 +76,40 @@ class AccountController extends Controller
 
     public function loginAction(LoginRequest $loginRequest){
         $request = $loginRequest->validated();
-        if(Auth::attempt($request))
-        {
-            if(is_null(Auth::user()->email_verified_at)){
+    
+        // Thực hiện xác thực
+        if(Auth::attempt($request)) {
+            // Kiểm tra xem email đã được xác thực chưa
+            if(is_null(Auth::user()->email_verified_at)) {
                 Auth::logout();
-
                 return redirect()->route('account.login')->with('errors', [
                     'title' => 'Đăng nhập không thành công',
                     'content' => 'Email của bạn chưa được xác thực, vui lòng kiểm tra email để tiến hành xác thực'
                 ]);
             }
+    
+            // Khởi tạo phiên làm việc
             $loginRequest->session()->regenerate();
-            
-            return redirect()->intended('/spacebox')->with('success', 'Đăng nhập thành công!');
+    
+            // Phân quyền dựa trên role_id
+            switch (Auth::user()->role_id) {
+                case 1: // Admin
+                    return redirect()->route('admin.index');
+                default: // Các quyền khác (nếu có)
+                    return redirect()->route('spacebox.home.index');
+            }
+        } else {
+            return redirect()->route('account.login')->with('errors', [
+                'title' => 'Đăng nhập không thành công',
+                'content' => 'Tài khoản hoặc mật khẩu không đúng, vui lòng thử lại'
+            ]);
         }
+    }
+    
 
-
-        return redirect()->route('account.login')->with('errors', [
-            'title' => 'Đăng nhập không thành công',
-            'content' => 'Tài khoản hoặc mật khẩu không đúng, vui lòng thử lại'
-        ]);
+    public function logoutAction(){
+        Auth::logout();
+        
+        return redirect()->route('account.login')->with('message','Đăng xuất thành công.');
     }
 }

@@ -7,8 +7,13 @@
             <a href="/spacebox" class="logo-home">SpaceBox</a>
         </div>
         <div class="action-auth flex-row">
-            <a class="link-auth" href="{{ route('account.login') }}">Đăng nhập</a>
-            <a class="link-auth" href="{{ route('account.register') }}">Đăng ký</a>
+            @if (Auth::check())
+                <span>Chào {{ Auth::user()->username }}</span>
+                <a class="link-auth" href="{{ route('account.logout') }}">Đăng xuất</a>
+            @else
+                <a class="link-auth" href="{{ route('account.login') }}">Đăng nhập</a>
+                <a class="link-auth" href="{{ route('account.register') }}">Đăng ký</a>
+            @endif
         </div>
     </div>
 </section>

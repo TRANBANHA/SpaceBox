@@ -12,7 +12,7 @@
             <form id="registerForm" action="{{ route('account.register.auth') }}" method="POST">
                 @csrf
                 <div class="input-box">
-                    <input value="{{ old('username')}}" id="username" name="username" class="form-control" type="text" placeholder="Nhập tên người dùng" required>
+                    <input value="{{ old('username') }}" id="username" name="username" class="form-control" type="text" placeholder="Nhập tên người dùng" required>
                 </div>
                 @error('username')
                     <small id="usernameError" class="auth-error">{{ $message }}</small>

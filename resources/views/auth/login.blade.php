@@ -13,7 +13,7 @@
             <form  id="loginForm" action="{{ route('account.login.auth') }}" method="POST">
                 @csrf
                 <div class="input-box">
-                    <input value="{{ old('email')}}" id="email" name="email" class="form-control" type="email" placeholder="Nhập email của bạn" required>
+                    <input value="{{ old('email') }}" id="email" name="email" class="form-control" type="email" placeholder="Nhập email của bạn" required>
                 </div>
                 <div class="input-box">
                     <input id="password" name="password" class="form-control"  type="password" placeholder="Nhập mật khẩu" required>

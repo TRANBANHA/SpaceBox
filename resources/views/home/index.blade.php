@@ -7,7 +7,11 @@
     <div class="home">
         <div class="landing-page flex-row">
             <div class="ldp-content flex-col">
-                <H1>Home</H1>
+                <h1>home</h1>
+                @if(isset($username))
+                    <span>Chào, {{ $username }}</span>
+                    <a class="link-auth" href="{{ route('account.logout.auth') }}">Đăng xuất</a>
+                @endif
             </div>
             <div class="ldp-sample">
                 <img src="" alt="">

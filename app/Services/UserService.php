@@ -14,7 +14,7 @@ class UserService
         $this->user = $user;
     }
     
-    public function create_user($param){
+    public function register_user($param){
 
         $user = [
             'username' => $param['username'],
@@ -24,6 +24,10 @@ class UserService
 
         return $this->user->create($user);
         
+    }
+
+    public function getList(){
+        return $this->user->all();
     }
 }
 

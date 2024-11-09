@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('role_id')->default(3);  // Người dùng mới mặc định quyền là Normal
             $table->timestamp('email_verified_at')->nullable(); 
-
+            
+            $table->rememberToken();
             $table->timestamps(); 
             $table->softDeletes();
 
