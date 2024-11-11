@@ -1,5 +1,8 @@
 
 <x-my-layout>
+<x-slot name="title">
+        Đăng ký tài khoản
+    </x-slot>
     <x-slot name="linkcss">
         <link rel="stylesheet" href="{{ url('assets/css/auth/auth.css') }}">
         <link rel="stylesheet" href="{{ url('assets/css/auth/modal-notifications.css') }}">
@@ -27,7 +30,7 @@
                 
                 <div class="input-box">
                     <input id="password" name="password" class="form-control" type="password" placeholder="Nhập mật khẩu" required>
-                    <i class="fa-regular fa-eye"></i>
+                    <i id="togglePassword1" class="fa-regular fa-eye togglePassword"></i>
                 </div>
                 @error('password')
                     <small id="passwordError" class="auth-error">{{ $message }}</small>
@@ -35,7 +38,7 @@
 
                 <div class="input-box">
                     <input id="password_confirmation" name="password_confirmation" class="form-control" type="password" placeholder="Nhập lại mật khẩu" required>
-                    <i class="fa-regular fa-eye"></i>
+                    <i id="togglePassword2" class="fa-regular fa-eye togglePassword"></i>
                 </div>
                 @error('password_confirmation')
                     <small id="repasswordError" class="auth-error">{{ $message }}</small>
@@ -65,6 +68,22 @@
             $('#emailError').delay(3000).fadeOut();
             $('#passwordError').delay(3000).fadeOut();
             $('#repasswordError').delay(3000).fadeOut();
+        });
+    </script>
+     <script>
+        // Lắng nghe sự kiện click trên các biểu tượng có class "togglePassword"
+        document.querySelectorAll('.togglePassword').forEach(function (toggleIcon) {
+            toggleIcon.addEventListener('click', function () {
+                // Lấy id của trường mật khẩu tương ứng
+                var passwordField = document.getElementById(toggleIcon.id === 'togglePassword1' ? 'password' : 'password_confirmation');
+                
+                // Thay đổi thuộc tính type của mật khẩu
+                var type = passwordField.type === 'password' ? 'text' : 'password';
+                passwordField.type = type;
+                
+                // Thay đổi biểu tượng mắt
+                toggleIcon.classList.toggle('fa-eye-slash');
+            });
         });
     </script>
 </x-my-layout>

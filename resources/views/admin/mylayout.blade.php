@@ -4,27 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
+    <link rel="icon" href="{{ url('favicon.ico')}} " type="image/x-icon">
     <link rel="stylesheet" href="{{ url('assets/css/admin/mylayout.css') }}">
     <!-- Boxicons CDN Link -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 </head>
 <body>
     <div class="sidebar">
         <div class="logo-details">
-        <i class='bx bxl-dropbox' ></i>
-            <span class="logo_name">SpaceBox</span>
+            <!-- <i class='bx bxl-dropbox' ></i> -->
+            <img src="{{ url('assets/images/logo-app-2.png') }}" alt="">
+            <a href="{{ route('admin.home.index') }}" class="logo_name">SpaceBox</a>
         </div>
         <ul class="nav-links">
+            
             <li>
-                <a href="{{ route('admin.getListUser') }}" class="active" >
+                <a href="{{ route('admin.getListUser') }}" class="{{ request()->routeIs('admin.getListUser') ||  url()->current() == url('/admin') ? 'active' : '' }}">
                     <i class='bx bx-user' ></i>
                     <span class="links_name">Quản Lý Người Dùng</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.getListRoom') }}" class="{{ request()->routeIs('admin.getListRoom') ? 'active' : ''}}" >
                     <i class='bx bxs-group'></i>
                     <span class="links_name">Quản Lý Room</span>
                 </a>
@@ -36,6 +40,7 @@
                     <span class="links_name">Setting</span>
                 </a>
             </li>
+
             <li class="log_out">
                 <a href="{{ route('account.logout') }}">
                     <i class='bx bx-log-out'></i>

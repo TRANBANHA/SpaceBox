@@ -23,6 +23,9 @@ class CheckAdmin
 
         // Nếu không phải admin, đăng xuất và chuyển hướng về trang đăng nhập
         Auth::logout();
-        return redirect()->route('account.login');
+        return redirect()->route('account.login')->with('errors', [
+            'title' => 'Đăng nhập không thành công',
+            'content' => 'Bạn không có quyền truy cập vào trang này'
+        ]);;
     }
 }

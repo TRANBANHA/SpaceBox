@@ -3,15 +3,11 @@
         <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}">
     </x-slot>
 
-    <!-- @include('components.header') -->
+    @include('components.header')
     <div class="home">
         <div class="landing-page flex-row">
             <div class="ldp-content flex-col">
-                <h1>home</h1>
-                @if (Auth::check())
-                    <span>Chào {{ Auth::user()->username }}</span>
-                    <a class="link-auth" href="{{ route('account.logout') }}">Đăng xuất</a>
-                @endif
+                <h1>Trang bắt đầu</h1>
             </div>
             <div class="ldp-sample">
                 <img src="" alt="">

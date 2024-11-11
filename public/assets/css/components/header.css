@@ -14,11 +14,15 @@
     gap: 10px;
     align-items: center;
 }
-.header .logo-i{
+/* .header .logo-i{
     margin-top: 1px;
     font-size: 17px;
+} */
+.logo-web img{
+    width: 25px;
+    height: 25px;
 }
-.logo-web .logo-home{
+.logo-web .logo-name{
     color: #fff;
     text-decoration: none;
     font-size: 16px;

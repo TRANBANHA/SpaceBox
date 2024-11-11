@@ -27,7 +27,7 @@ class UserService
     }
 
     public function getList(){
-        return $this->user->all();
+        return $this->user->where('role_id', '!=', '1')->get();
     }
 }
 

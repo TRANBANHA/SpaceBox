@@ -76,15 +76,24 @@ class AccountController extends Controller
 
     public function loginAction(LoginRequest $loginRequest){
         $request = $loginRequest->validated();
-    
+        
+        $remember = $loginRequest->has('remember');
+        // dd($remember); 
         // Thực hiện xác thực
-        if(Auth::attempt($request)) {
+        if(Auth::attempt(['email' => $request['email'], 'password' => $request['password']], $remember)) {
             // Kiểm tra xem email đã được xác thực chưa
             if(is_null(Auth::user()->email_verified_at)) {
                 Auth::logout();
                 return redirect()->route('account.login')->with('errors', [
                     'title' => 'Đăng nhập không thành công',
                     'content' => 'Email của bạn chưa được xác thực, vui lòng kiểm tra email để tiến hành xác thực'
+                ]);
+            }
+            elseif(!Auth::user()->status){
+                Auth::logout();
+                return redirect()->route('account.login')->with('errors', [
+                    'title' => 'Đăng nhập không thành công',
+                    'content' => 'Tài khoản của bạn đã bị khoá hoặc vô hiệu hoá'
                 ]);
             }
     

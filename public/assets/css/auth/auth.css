@@ -88,10 +88,34 @@ form h3{
   font-size: 14px;
   font-weight: 500;
 }
+.action-box{
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 15px 3px 10px;
+  font-size: 14px;
+}
+
+
+.action-box div{
+  gap: 10px;
+}
+
+.action-box div input{
+  cursor: pointer;
+}
+
+.action-box div label{
+  color: #2d2d2d;
+}
+.forgot-pass{
+  color: #4070f4;
+  font-size: 14px;
+}
+
 .button-box{
   height: 52px;
   border: none;
-  margin: 10px 0;
+  margin: 10px 0 15px;
 }
 
 .button-box input{

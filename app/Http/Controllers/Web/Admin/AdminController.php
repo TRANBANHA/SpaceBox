@@ -22,4 +22,8 @@ class AdminController extends Controller
         $list = $this->userService->getList();
         return view('admin.user-managers', ['users' => $list]);
     }
+    public function getListRoom(){
+
+        return view('admin.room-managers');
+    }
 }
