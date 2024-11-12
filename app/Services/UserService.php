@@ -29,6 +29,11 @@ class UserService
     public function getList(){
         return $this->user->where('role_id', '!=', '1')->get();
     }
+
+
+    public function getUserId($id){
+        return User::where('user_id', $id)->first();
+    }
 }
 
 

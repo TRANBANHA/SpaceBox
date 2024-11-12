@@ -21,15 +21,22 @@ Route::group(['prefix' => 'account', 'as' => 'account.'], function(){
     Route::post('/login',[AccountController::class, 'loginAction'])->name('login.auth');
 
     Route::get('/logout', [AccountController::class, 'logoutAction'])->name('logout');
+
+    Route::get('/reset-password', [AccountController::class, 'forgotPassForm'])->name('forgotPassForm');
+    Route::post('/reset-password', [AccountController::class, 'sendEmailResetPass'])->name('sendResetPass');
 });
 
     
 // Dành cho Admin
 Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin.'], function(){
     Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::get('/spacebox', [HomeController::class, 'index'])->name('home.index');
     Route::get('/quan-ly-nguoi-dung', [AdminController::class, 'getListUser'])->name('getListUser');
     Route::get('/quan-ly-phong-chat', [AdminController::class, 'getListRoom'])->name('getListRoom');
-    Route::get('/spacebox', [HomeController::class, 'index'])->name('home.index');
+    Route::get('/profile', [AdminController::class, 'getProfile'])->name('getProfile');
+    Route::get('/change-pass', [AdminController::class, 'changePassForm'])->name('changePassForm');
+    Route::put('/change-pass', [AdminController::class, 'changePassAction'])->name('changePass');
+
 });
 
 

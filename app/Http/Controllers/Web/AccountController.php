@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\Account\ForgotPassRequest;
 use App\Http\Requests\Web\Account\LoginRequest;
 use App\Http\Requests\Web\Account\RegisterRequest;
+use App\Mail\ResetPassword;
 use App\Mail\VerifyAccount;
 use App\Models\User;
 use App\Services\UserService;
+use Hash;
 use Mail;
 use Illuminate\Support\Facades\Auth;
+use Str;
 
 class AccountController extends Controller
 {
@@ -32,12 +36,12 @@ class AccountController extends Controller
 
     public function registerAction(RegisterRequest $registerRequest)
     {
-        $credentials = $registerRequest->validated();   
+        $request = $registerRequest->validated();   
 
-        $acc = $this->userService->register_user($credentials);
+        $acc = $this->userService->register_user($request);
 
         if ($acc) {
-            Mail::to($credentials['email'])->send(new VerifyAccount($acc));
+            Mail::to($request['email'])->send(new VerifyAccount($acc));
 
             return redirect()->back()->with('success', [
                 'title' => 'Đăng ký tài khoản thành công',
@@ -78,7 +82,6 @@ class AccountController extends Controller
         $request = $loginRequest->validated();
         
         $remember = $loginRequest->has('remember');
-        // dd($remember); 
         // Thực hiện xác thực
         if(Auth::attempt(['email' => $request['email'], 'password' => $request['password']], $remember)) {
             // Kiểm tra xem email đã được xác thực chưa
@@ -104,7 +107,7 @@ class AccountController extends Controller
             switch (Auth::user()->role_id) {
                 case 1: // Admin
                     return redirect()->route('admin.index');
-                default: // Các quyền khác (nếu có)
+                default: // Các quyền khác
                     return redirect()->route('spacebox.home.index');
             }
         } else {
@@ -120,5 +123,30 @@ class AccountController extends Controller
         Auth::logout();
         
         return redirect()->route('account.login')->with('message','Đăng xuất thành công.');
+    }
+
+
+    public function forgotPassForm(){
+        return view('auth.forgot-pass');
+    }
+
+    public function sendEmailResetPass(ForgotPassRequest $forgotPassRequest){
+        $request = $forgotPassRequest->validated();
+
+        $user = User::where('email', $request['email'])->first();
+
+        if($user){
+            $newPassword = Str::random(8);
+            $user->password = Hash::make($newPassword);
+
+            $user->save();
+
+            Mail::to($request['email'])->send(new ResetPassword($user,$newPassword));
+
+            return redirect()->route('account.login')->with('success', [
+                'title' => 'Gửi yêu cầu thành công',
+                'content' => 'Mật khẩu mới đã được gửi đến email của bạn.'
+            ]);
+        }
     }
 }

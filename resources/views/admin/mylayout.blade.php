@@ -33,7 +33,19 @@
                     <span class="links_name">Quản Lý Room</span>
                 </a>
             </li>
-            
+            <li>
+                <a href="{{ route('admin.getProfile')}} "  class="{{ request()->routeIs('admin.getProfile') ? 'active' : ''}}">
+                    <i class='bx bx-id-card'></i>
+                    <span class="links_name">Trang cá nhân</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.changePassForm')}} "  class="{{ request()->routeIs('admin.changePassForm') ? 'active' : ''}}">
+                    <i class='bx bxs-pencil'></i>
+                    <span class="links_name">Đổi mật khẩu</span>
+                </a>
+            </li>
+
             <li>
                 <a href="#">
                     <i class='bx bx-cog' ></i>
@@ -74,6 +86,8 @@
         </div>
     </section>
 
+
+
     <script>
         let sidebar = document.querySelector(".sidebar");
         let sidebarBtn = document.querySelector(".sidebarBtn");
@@ -88,5 +102,7 @@
         }
     </script>
 
+
+    @yield('scripts')
 </body>
 </html>

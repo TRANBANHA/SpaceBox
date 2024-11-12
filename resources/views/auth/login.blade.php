@@ -27,7 +27,7 @@
                         <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                         <label for="remember">Nhớ mật khẩu</label>
                     </div>
-                    <a href="#" class="forgot-pass">Quên mật khẩu</a>
+                    <a href="{{ route('account.forgotPassForm') }}" class="forgot-pass">Quên mật khẩu</a>
                 </div>
                 <div class="button-box">
                     <input type="Submit" value="Đăng Nhập">
@@ -41,12 +41,14 @@
             <img src="{{ url('assets/images/demo.jpg') }}" alt="">
         </div>
     </div>
+    
     @if(session('success'))
         @include('auth.modal-success')
     @endif
     @if(session('errors'))
         @include('auth.modal-errors')
     @endif
+    
     <script>
         document.getElementById('togglePassword').addEventListener('click', function () {
             var passwordField = document.getElementById('password');

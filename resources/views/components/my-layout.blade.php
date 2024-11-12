@@ -48,6 +48,7 @@
         <section id="myLayout" class="flex-col">
             {{ $slot }}
         </section>
-
+        
+        
     </body>
 </html>
