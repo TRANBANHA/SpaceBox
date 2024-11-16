@@ -19,7 +19,8 @@ class UserService
         $user = [
             'username' => $param['username'],
             'email' => $param['email'],
-            'password' => Hash::make($param['password'])
+            'password' => Hash::make($param['password']),
+            'img_path' => 'https://res.cloudinary.com/dy6y1gpgm/image/upload/v1731680383/male_q2q91r.png',
         ];
 
         return $this->user->create($user);

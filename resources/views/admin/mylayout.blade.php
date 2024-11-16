@@ -75,8 +75,8 @@
             </div>
             <div class="profile-details">
                 @if (Auth::check())
-                    <span class="admin_name">{{Auth::user()->username }}</span>
-                    <img src="{{ url('assets/images/adminLogo.png') }}" alt="">
+                    <span class="admin_name">{{ Auth::user()->username }}</span>
+                    <img src="{{ Auth::user()->img_path ?? url('assets/images/adminLogo.png') }}" alt="">
                 @endif
             </div>
         </nav>

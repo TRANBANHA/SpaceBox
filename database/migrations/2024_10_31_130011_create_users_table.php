@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email')->unique(); 
             $table->string('password');
             $table->string('username');
-            $table->text('img_path')->nullable();
+            $table->string('img_path')->nullable();
             $table->boolean('gender')->default(true); // Mặc định true là nam
             $table->text('description')->nullable();
             $table->unsignedBigInteger('role_id')->default(3);  // Người dùng mới mặc định quyền là Normal

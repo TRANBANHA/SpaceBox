@@ -26,16 +26,28 @@ Route::group(['prefix' => 'account', 'as' => 'account.'], function(){
     Route::post('/reset-password', [AccountController::class, 'sendEmailResetPass'])->name('sendResetPass');
 });
 
+
     
 // Dành cho Admin
 Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin.'], function(){
     Route::get('/', [AdminController::class, 'index'])->name('index');
-    Route::get('/spacebox', [HomeController::class, 'index'])->name('home.index');
+    // Quản lý người dùng
     Route::get('/quan-ly-nguoi-dung', [AdminController::class, 'getListUser'])->name('getListUser');
+    Route::post('/quan-ly-nguoi-dung/resetpass', [AccountController::class, 'sendEmailResetPass'])->name('sendResetPass');
+    // Quản lý phòng chat
     Route::get('/quan-ly-phong-chat', [AdminController::class, 'getListRoom'])->name('getListRoom');
+    
+    // Xem, sửa profile
     Route::get('/profile', [AdminController::class, 'getProfile'])->name('getProfile');
+    Route::patch('/update-profile', [AccountController::class, 'updateProfile'])->name('updateProfile');
+
+    // Change password
     Route::get('/change-pass', [AdminController::class, 'changePassForm'])->name('changePassForm');
     Route::put('/change-pass', [AdminController::class, 'changePassAction'])->name('changePass');
+    
+    // Đăng nhập vào spacebox
+    Route::get('/spacebox', [HomeController::class, 'index'])->name('home.index');
+
 
 });
 

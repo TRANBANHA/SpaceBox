@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id('room_id');
             $table->string('room_name'); 
-            $table->unsignedBigInteger('created_by'); // ID của người tạo phòng
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
             $table->softDeletes();
 

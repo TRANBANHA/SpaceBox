@@ -1,10 +1,10 @@
 /* Googlefont Poppins CDN Link */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap'); */
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 .sidebar{
   position: fixed;
@@ -119,6 +119,7 @@
 
 .home-section nav .sidebar-button .managers{
   font-size: 17px;
+  font-weight: 600;
 }
 nav .sidebar-button i{
   cursor: pointer;
@@ -165,15 +166,16 @@ nav .search-box .bx-search{
   height: 50px;
   padding: 0 15px 0 2px;
 }
+
+
 nav .profile-details img{
   height: 35px;
   width: 35px;
-  border-radius: 6px;
   object-fit: cover;
-  cursor: pointer;
+  border-radius: 50%;
 }
 nav .profile-details .admin_name{
-    width: 100%;
+    /* width: 100%; */
     text-align: center;
     font-size: 15px;
     font-weight: 500;
@@ -304,7 +306,7 @@ nav .profile-details i{
 
 .flex-row {
   display: flex;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .div-check {
@@ -379,6 +381,90 @@ nav .profile-details i{
   background-color: #f5f5f5;
 }
 
+/* Modal sendEmail resetPass */
+.modal-sendEmail-resetPass {
+  display: none; 
+  position: fixed; /* Đặt modal cố định */
+  z-index: 1000; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-sendEmail-content {
+  background-color: #fff;
+  margin: 10% auto; 
+  padding: 20px 30px;
+  border: 1px solid #888;
+  width: 45%; 
+  max-width: 600px; 
+  border-radius: 8px;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.modal-h-title {
+  margin: 0;
+  font-size: 23px;
+  text-transform: capitalize;
+  color: #009cff;
+}
+
+.bx-x-circle {
+  cursor: pointer;
+  font-size: 24px;
+  color: #009cff;
+}
+
+.modal-note{
+  font-size: 16px;
+  color: #444444;
+  margin: 10px auto;
+}
+
+#resetPassForm .input-box{
+  margin: 10px 0;
+  text-align: center;
+}
+.input-box input:focus {
+  outline: 1px solid #278fff; 
+  border-color: #278fff; 
+}
+.input-box input{
+  width: 80%;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 5px;
+  border: 2px solid #278fff;
+  color: #0f668d;
+}
+
+
+#resetPassForm .button-box{
+  text-align: center;
+  margin: 30px 0 5px;
+}
+
+.button-box button{
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #009cff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
 /* Căn chỉnh biểu tượng ba chấm */
 .admin-action {
   position: relative;
@@ -389,9 +475,195 @@ nav .profile-details i{
   font-size: 24px;
   color: #333;
 }
+/* Change Proflie */
 
- /* Change Pass Form  */
- .mainDiv {
+.profiles{
+  width: calc(100% - 240px);
+  margin: auto;
+  padding: 20px 25px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-head{
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.pf-h-box-info{
+  align-items: center;
+  gap: 25px;
+}
+
+.profile-head .pf-h-box-img{
+  width: min-content;
+  border-radius: 50%;
+}
+
+.pf-h-box-img img{
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+
+
+.pf-h-info{
+  padding: 8px 0;
+  height: 100%;
+  /* gap: 10px; */
+  justify-content: space-between;
+}
+
+.pf-h-info .h-name{
+  font-size: 18px;
+  font-weight: 600;
+  color: #0063ac;
+}
+
+.pf-h-info .h-email{
+  font-size: 12px;
+  color: #717171;
+  margin-left: 2px;
+}
+.pf-h-info .h-status{
+  
+  margin-left: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.pf-h-info .change-avt-btn{
+  max-width: 140px;
+  padding: 8px 12px;
+  margin-left: 3px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: #279eff;
+  color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.change-avt-btn i{
+  font-size: 18px;
+}
+.change-avt-btn span{
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.pf-h-role{
+  padding: 0 10px;
+  gap: 10px;
+  font-size: 15px;
+  justify-content: center;
+  align-items: baseline;
+
+}
+.pf-h-role span{
+  height: min-content;
+  font-weight: 600;
+  color: #848484;
+}
+.pf-h-role .h-role{
+  height: min-content;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  padding: 5px;
+  background-color: #849fdb;
+  border-radius: 5px;
+}
+
+.profile-content{
+  padding: 0 80px;
+  gap: 20px;
+}
+.frm-profile-edit{
+  gap: 20px;
+}
+.pf-t-title{
+  margin: 20px auto;
+}
+
+.pf-t-title h4{
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #0063ac;
+}
+
+.frm-box-info{
+  justify-content: space-between;
+}
+
+
+.frm-info{
+  gap: 10px;
+}
+
+.frm-info input{
+  width: 290px;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+}
+
+.pf-t-gender{
+  gap: 40px;
+  align-items: center;
+}
+.pf-t-gender .box-gd {
+  gap: 10px;
+}
+.pf-t-gender .box-gd input {
+  cursor: pointer;
+}
+
+.pf-t-descriptions{
+  gap: 10px;
+}
+
+.pf-t-descriptions textarea{
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+
+.btn-box-save{
+  margin: auto;
+}
+
+.btn-box-save button{
+  max-width: 100px;
+  justify-content: center;
+  margin: 5px auto;
+  padding: 8px 20px;
+  font-weight: bold;
+  background-color: #279eff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-items: center;
+  gap: 5px;
+}
+
+.profiles input:focus, .profiles textarea:focus {
+  outline: none;
+  border: 2px solid #3498db; /* Thay đổi màu viền theo ý bạn */
+}
+
+
+
+
+/* Change Pass Form  */
+.mainDiv {
   display: flex;
   min-height: 100%;
   align-items: center;
@@ -405,7 +677,7 @@ nav .profile-details i{
   background: #fff;
   padding: 30px 0 35px;
   border-radius: 4px;
-  margin: auto 0;
+  margin: 30px auto;
   box-shadow: 0px 0 2px 0 rgba(0,0,0,0.25);
 }
 #signupLogo {
@@ -434,7 +706,7 @@ margin-top: 15px;
 }
 
 
-input {
+.inputDiv input {
 height: 40px;
 font-size: 16px;
 border-radius: 4px;
@@ -484,6 +756,11 @@ color: #666666;
 }
 
 /* Responsive Media Query */
+@media (max-width: 1300px) {
+  .profiles {
+    width: calc(100% - 160px);
+  }
+}
 @media (max-width: 1240px) {
   .sidebar{
     width: 60px;
@@ -508,12 +785,37 @@ color: #666666;
     width: calc(100% - 220px);
     left: 220px;
   }
+  .profiles {
+    width: calc(100% - 100px);
+  }
+  .profile-content{
+    padding: 0 60px;
+  }
+  
+  .frm-info input {
+    width: 250px;
+  }
+  
 }
-
-@media (max-width: 1150px) {
-  /* .home-content .list-boxes{
-    flex-direction: column;
-  } */
+@media (max-width: 1000px) {
+  .profile-content{
+    padding: 0 30px;
+  }
+  
+  .frm-info input {
+    width: 250px;
+  }
+  
+}
+@media (max-width: 800px) {
+  .profile-content{
+    padding: 0 30px;
+  }
+  
+  .frm-info input {
+    width: 210px;
+  }
+  
 }
 
 @media (max-width: 700px) {
@@ -526,6 +828,7 @@ color: #666666;
     height: 50px;
     min-width: 40px;
   }
+  
 }
 @media (max-width: 550px) {
   .sidebar.active ~ .home-section nav .profile-details{

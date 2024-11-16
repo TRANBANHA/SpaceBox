@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\ChangePasswordRequest;
+use App\Http\Requests\Web\Account\UpdateProfileRequest;
 use App\Services\UserService;
 use Auth;
 use Hash;
-use Illuminate\Http\Request;
-use SebastianBergmann\CodeUnit\FunctionUnit;
 
 class AdminController extends Controller
 {
@@ -32,8 +31,15 @@ class AdminController extends Controller
     }
 
     public function getProfile(){
-        return view('admin.profile');
+        if(Auth::user()->role_id == 1){
+            $admin = $this->userService->getUserId(Auth::user()->user_id);
+            return view('admin.profile', ['admin' => $admin]);
+        }
     }
+
+    
+
+
     public function changePassForm(){
         return view('admin.change-pass');
     } 
@@ -47,14 +53,13 @@ class AdminController extends Controller
                 $user->password = Hash::make($request['password']);
                 $user->save();
 
-                return redirect()->back()->with('success',[
-                    'title' => 'Đổi mật khẩu thành công',
-                    'content' => '',
-                ]);
+                return redirect()->back()->with('success','Đổi mật khẩu thành công');
             }
         }
         else{
             return redirect()->route('account.login');
         }
     }
+
+    
 }

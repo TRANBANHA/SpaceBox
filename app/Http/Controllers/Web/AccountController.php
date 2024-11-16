@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\ForgotPassRequest;
 use App\Http\Requests\Web\Account\LoginRequest;
 use App\Http\Requests\Web\Account\RegisterRequest;
+// use App\Http\Requests\Web\Account\UpdateProfileRequest;
+use App\Http\Requests\Web\Account\UpdateProfileRequest;
 use App\Mail\ResetPassword;
 use App\Mail\VerifyAccount;
 use App\Models\User;
 use App\Services\UserService;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Hash;
 use Mail;
 use Illuminate\Support\Facades\Auth;
@@ -130,6 +133,41 @@ class AccountController extends Controller
         return view('auth.forgot-pass');
     }
 
+    
+    
+    // Update profile
+    public function updateProfile(UpdateProfileRequest $updateProfileRequest)
+    {
+        $request = $updateProfileRequest->validated();
+        
+        $admin = auth()->user();
+
+        $admin->username = $request['username'];
+        $admin->gender = $request['gender'];
+        $admin->description = $request['description'];
+
+        if($updateProfileRequest->hasFile('fileImg')){
+            if ($admin->img_path) {
+                Cloudinary::destroy($admin->img_path);
+            }
+
+
+            $imgUploadFile = Cloudinary::upload($updateProfileRequest->file('fileImg')->getRealPath())->getSecurePath();
+
+
+            if ($imgUploadFile) {
+                $admin->img_path = $imgUploadFile;
+            } else {
+                return redirect()->back()->with('error', 'Tải ảnh không thành công');
+            }
+        }
+        $admin->save();
+        return redirect()->back()->with('success', 'Cập nhật thông tin thành công');
+
+    }
+
+
+    // Gửi email reset password
     public function sendEmailResetPass(ForgotPassRequest $forgotPassRequest){
         $request = $forgotPassRequest->validated();
 
@@ -143,10 +181,13 @@ class AccountController extends Controller
 
             Mail::to($request['email'])->send(new ResetPassword($user,$newPassword));
 
-            return redirect()->route('account.login')->with('success', [
+            return redirect()->back()->with('success', [
                 'title' => 'Gửi yêu cầu thành công',
                 'content' => 'Mật khẩu mới đã được gửi đến email của bạn.'
             ]);
         }
     }
+
+
+
 }
