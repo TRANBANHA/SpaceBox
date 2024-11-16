@@ -34,6 +34,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     // Quản lý người dùng
     Route::get('/quan-ly-nguoi-dung', [AdminController::class, 'getListUser'])->name('getListUser');
     Route::post('/quan-ly-nguoi-dung/resetpass', [AccountController::class, 'sendEmailResetPass'])->name('sendResetPass');
+    Route::delete('/quan-ly-nguoi-dung/delete', [AdminController::class, 'deleteUser'])->name('deleteUsers');
     // Quản lý phòng chat
     Route::get('/quan-ly-phong-chat', [AdminController::class, 'getListRoom'])->name('getListRoom');
     

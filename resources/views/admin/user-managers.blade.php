@@ -7,104 +7,88 @@
 
 @section('content')
   <div class="list-boxes">
-    <d class="recent-list box">
-        <div class="recent-list-table table-head flex-row">
-          <div class="div-check"></div>
-          <div class="user-box" style="text-align:left;">Thông tin người dùng</div>
-          <div class="user-verify">Xác thực</div>
-          <div class="user-role">Quyền</div>
-          <div class="user-gender">Giới tính</div>
-          <div class="user-status">Trạng thái</div>
-          <div class="admin-action">Action</div>
+    <div class="recent-list box">
+      <div class="btn-addUser flex-row">
+        <i class='bx bxs-user-plus'></i>
+        <span>Add new</span>
+      </div>
+      <div class="recent-list-table table-head flex-row">
+        <div class="div-check flex-row">
+          <input type="checkbox">
+          <span>All</span>
         </div>
-        @foreach ($users as $user)
+        <div class="user-box" style="text-align:left;">Thông tin người dùng</div>
+        <div class="user-verify">Xác thực</div>
+        <div class="user-role">Quyền</div>
+        <div class="user-gender">Giới tính</div>
+        <div class="user-status">Trạng thái</div>
+        <div class="admin-action">Action</div>
+      </div>
+      @foreach ($users as $user)
         <div class="recent-list-table table-content flex-row">
-            <div class="div-check">
-              <input type="checkbox">
+          <div class="div-check flex-row">
+            <input type="checkbox" class="select-user" value="{{ $user->user_id }}">
+          </div>
+          <div class="user-box flex-row">
+            <div class="user-avt">
+              <img src="{{ $user->img_path ?? 'https://res.cloudinary.com/dy6y1gpgm/image/upload/v1731680383/male_q2q91r.png' }}" alt="User Avatar">
             </div>
-            <div class="user-box flex-row">
-              <div class="user-avt">
-                <img src="{{ $user->img_path ?? 'https://res.cloudinary.com/dy6y1gpgm/image/upload/v1731680383/male_q2q91r.png' }}" alt="User Avatar">
-              </div>
-              <div class="user-info flex-col">
-                <div class="info-name">{{ $user->username }}</div>
-                <div class="info-email">{{ $user->email }}</div>
-              </div>
+            <div class="user-info flex-col">
+              <div class="info-name">{{ $user->username }}</div>
+              <div class="info-email">{{ $user->email }}</div>
             </div>
-            <div class="user-verify" style="color: {{ $user->email_verified_at ? '#898989' : '#ff0000' }}">{{ $user->email_verified_at ?? 'Chưa xác thực' }}</div>
-            <div class="user-role">
-              {{ ['Moderate User', 'Normal User'][$user->role_id - 2] ?? 'Unknown' }}
-            </div>
+          </div>
+          <div class="user-verify" style="color: {{ $user->email_verified_at ? '#898989' : '#ff0000' }}">{{ $user->email_verified_at ?? 'Chưa xác thực' }}</div>
+          <div class="user-role">
+            {{ ['Moderate User', 'Normal User'][$user->role_id - 2] ?? 'Unknown' }}
+          </div>
 
-            <div class="user-gender">{{ $user->gender ? 'Nam' : 'Nữ' }}</div>
-            <div class="user-status" style="font-weight: bold; color: {{ $user->status ? '#00ed3e' : '#ff4400' }}">{{ $user->status ? 'Active' : 'Inactive' }}</div>
-            <div class="admin-action">
-              <i class='bx bx-dots-vertical-rounded'></i>
-              <!-- Dropdown Menu -->
-              <div class="action-menu">
-                <ul>
-                  <!-- <li class="open-modal-sendEmail-resetPass">Reset Password</li> -->
-                  <li><a href="#" class="open-modal-sendEmail-resetPass">Reset Password</a></li>
-                  <li><a href="#" class="open-modal-">Phân quyền</a></li>
-                  <li><a href="#">Xóa tài khoản</a></li> 
-                </ul>
-              </div>
-            </div>     
-          </div>
-          <!-- Modal send email reset password -->
-          <div class="modal-sendEmail-resetPass">
-            <div class="modal-sendEmail-content flex-col">
-              <div class="modal-head flex-row">
-                <h2 class="modal-h-title">Cấp mật khẩu mới</h2>
-                <i class='bx bx-x-circle'></i>
-              </div>
-              <p class="modal-note">Mật khẩu mới sẽ được gửi tới email của người dùng:</p>
-              <form id="resetPassForm" action="{{ route('admin.sendResetPass') }}" method="POST">
-                  @csrf
-                  <div class="input-box">
-                      <input value="{{ $user->email }}" id="email" name="email" class="form-control" type="email" readonly>
-                  </div>
-                  <div class="button-box">
-                      <button type="Submit">Xác nhận</button>
-                  </div>
-              </form>
+          <div class="user-gender">{{ $user->gender ? 'Nam' : 'Nữ' }}</div>
+          <div class="user-status" style="font-weight: bold; color: {{ $user->status ? '#00ed3e' : '#ff4400' }}">{{ $user->status ? 'Active' : 'Inactive' }}</div>
+          <div class="admin-action">
+            <i class='bx bx-dots-vertical-rounded'></i>
+            <!-- Dropdown Menu -->
+            <div class="action-menu">
+              <ul>
+                <li><a href="#" class="open-modal-sendEmail-resetPass">Reset password</a></li>
+                <li><a href="#" class="">Phân quyền</a></li>
+              </ul>
             </div>
-          </div>
-        @endforeach    
-        <div class="box-functions">
-          <div class="box-functions-left">
-            <div class="select-all">
-              <input type="checkbox">
-              <span>Chọn tất cả</span>
+          </div>     
+        </div>
+        <!-- Modal send email reset password -->
+        <div class="modal-sendEmail-resetPass">
+          <div class="modal-sendEmail-content flex-col">
+            <div class="modal-head flex-row">
+              <h2 class="modal-h-title">Cấp mật khẩu mới</h2>
+              <i class='bx bx-x-circle'></i>
             </div>
-            <div class="box-functions-list">
-              <span>Chọn thao tác</span>
-              <select name="functions" id="functions">
-                <option value="delete">Xóa tài khoản</option>
-                <option value="active">Kích hoạt tài khoản</option>
-                <option value="inactive">Vô hiệu hóa tài khoản</option>
-              </select>
-            </div>
-            <div class="box-functions-apply">
-              <button>Áp dụng</button>
-            </div>
-          </div>
-          <div class="box-functions-right">
-            <div class="box-functions-pagination">
-              <span>1-10 of 100</span>
-              <div class="box-functions-pagination-list">
-                <span><i class='bx bxs-chevron-left'></i></span>
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span><i class='bx bxs-chevron-right'></i></span>
-              </div>
-            </div>
+            <p class="modal-note">Mật khẩu mới sẽ được gửi tới email của người dùng</p>
+            <form id="resetPassForm" action="{{ route('admin.sendResetPass') }}" method="POST">
+                @csrf
+                <div class="input-box">
+                    <input value="{{ $user->email }}" id="email" name="email" class="form-control" type="email" readonly>
+                </div>
+                <div class="button-box">
+                    <button type="Submit">Xác nhận</button>
+                </div>
+            </form>
           </div>
         </div>
-      </d>
+      @endforeach 
+      <!-- Admin functions -->   
+      <div class="box-functions">
+        <form id="deleteUsersForm" action="{{ route('admin.deleteUsers') }}" method="POST">
+          @csrf
+          @method('DELETE')
+          
+          <input type="hidden" name="user_ids" id="user_ids">
+          <button class="btn-box flex-row btn-delete-selected" type="submit">
+              <i class='bx bx-trash'></i>
+              <span>Xóa tài khoản</span>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 @endsection
@@ -113,24 +97,100 @@
 @section('scripts')
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    // Lắng nghe sự kiện click vào biểu tượng 3 chấm để mở menu
-    $(document).on('click', '.admin-action i', function() {
-      $(this).siblings('.action-menu').toggle(); // Hiển thị hoặc ẩn menu
-    });
 
-    // Đóng menu khi người dùng click bên ngoài
-    $(document).on('click', function(e) {
-      if (!$(e.target).closest('.admin-action').length) {
-        $('.action-menu').hide(); // Ẩn menu nếu click ngoài
-      }
+  <!-- Lắng nghe sự kiện click vào checkbox -->
+  <script>
+    $(document).ready(function () {
+      // Xử lý checkbox "All" để chọn hoặc bỏ chọn tất cả
+      // $(document).on('change', '.table-head .div-check input[type="checkbox"]', function () {
+      //   const isChecked = $(this).is(':checked');
+      //   // Chọn hoặc bỏ chọn tất cả checkbox trong danh sách
+      //   $('.table-content .div-check input[type="checkbox"]').prop('checked', isChecked);
+      //   // Hiển thị hoặc ẩn phần Admin functions
+      //   if (isChecked) {
+      //       $('.box-functions').fadeIn();
+      //   } else {
+      //       $('.box-functions').fadeOut();
+      //   }
+      // });
+      $(document).on('change', '.table-head .div-check input[type="checkbox"]', function () {
+        const isChecked = $(this).is(':checked');
+        // Chọn hoặc bỏ chọn tất cả checkbox trong danh sách
+        $('.table-content .div-check input[type="checkbox"]').prop('checked', isChecked);
+        // Hiển thị hoặc ẩn phần Admin functions
+        if (isChecked) {
+            $('.box-functions').fadeIn();
+        } else {
+            $('.box-functions').fadeOut();
+        }
+      });
+      $(document).on('change', '.div-check input[type="checkbox"]', function () {
+          // Kiểm tra xem có checkbox nào được chọn không
+          const hasChecked = $('.div-check input[type="checkbox"]:checked').length > 0;
+          // Hiển thị hoặc ẩn phần Admin functions dựa trên trạng thái checkbox
+          if (hasChecked) {
+              $('.box-functions').fadeIn(); // Hiển thị
+          } else {
+              $('.box-functions').fadeOut(); // Ẩn
+          }
+      });
+
+        
     });
   </script>
 
+  <!-- Lắng nghe sự kiện click vào nút "Xóa tài khoản" -->
   <script>
-    // Sử dụng sự kiện click để mở modal reset mật khẩu
+    $(document).ready(function () {
+      $('.btn-delete-selected').on('click', function (e) {
+          e.preventDefault(); 
+          // Thu thập danh sách user_id từ các checkbox đã chọn
+          let selectedIds = [];
+          $('.select-user:checked').each(function () {
+              selectedIds.push($(this).val());
+          });
+          // Gán danh sách ID vào input ẩn
+          $('#user_ids').val(selectedIds.join(',')); // Chuỗi các ID, phân tách bằng dấu phẩy
+          // Kiểm tra nếu không có ID nào được chọn
+          if (selectedIds.length === 0) {
+              alert('Vui lòng chọn ít nhất một tài khoản để xóa.');
+              return;
+          }
+          // Gửi form
+          $('#deleteUsersForm').submit();
+      });
+    });
+  </script>
+
+
+
+  <!-- Lắng nghe sự kiện click vào biểu tượng 3 chấm để mở menu -->
+  <script>
+    $(document).ready(function () {
+        $(document).on('click', '.admin-action i', function (e) {
+            e.stopPropagation(); // Ngăn chặn sự kiện lan ra ngoài
+
+            // Ẩn tất cả các menu khác
+            $('.action-menu').not($(this).siblings('.action-menu')).hide();
+          
+            // Hiển thị hoặc ẩn menu của dòng được click
+            $(this).siblings('.action-menu').toggle();
+        });
+
+        // Đóng tất cả các menu khi người dùng click bên ngoài
+        $(document).on('click', function () {
+            $('.action-menu').hide(); // Ẩn tất cả các menu
+        });
+    }); 
+
+  </script>
+
+
+
+  <!-- Sử dụng sự kiện click để mở modal reset mật khẩu -->
+  <script>
     $(document).on('click', '.open-modal-sendEmail-resetPass', function (e) {
-        e.preventDefault(); // Ngăn chặn hành động mặc định của thẻ <a>
+        e.preventDefault();
         
         // Lấy thông tin email của người dùng từ dòng được click
         const userEmail = $(this).closest('.recent-list-table').find('.info-email').text().trim();

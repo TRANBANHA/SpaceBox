@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\ChangePasswordRequest;
 use App\Http\Requests\Web\Account\UpdateProfileRequest;
+use App\Http\Requests\Web\Admin\DeleteRequest;
+use App\Models\User;
 use App\Services\UserService;
 use Auth;
 use Hash;
@@ -61,5 +63,17 @@ class AdminController extends Controller
         }
     }
 
-    
+    public function deleteUser(DeleteRequest $request)
+    {
+        dd('sda');
+        // Lấy danh sách user_ids từ request đã được xác thực
+        $userIds = $request->validated()['user_ids'];
+
+        if (!empty($userIds)) {
+            User::whereIn('user_id', $userIds)->delete();
+            return redirect()->back()->with('success', 'Xóa thành công các tài khoản đã chọn.');
+        }
+
+        return redirect()->back()->with('error', 'Vui lòng chọn tài khoản để xóa.');
+    }
 }
