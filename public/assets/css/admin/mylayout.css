@@ -25,15 +25,13 @@
 .sidebar .logo-details img{
   width: 35px;
   height: 35px;
-  /* font-weight: 500; */
-  /* color: #fff; */
-  margin: 0 12px;
+  margin: 0px 13px 0px 12px;
   text-align: center
 }
 .sidebar .logo-details .logo_name{
   color: #fff;
   font-size: 24px;
-  font-weight: 500;
+  font-weight: bold;
   text-decoration: none;
 }
 .sidebar .nav-links{
@@ -118,7 +116,7 @@
 }
 
 .home-section nav .sidebar-button .managers{
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
   color: #2697FF;
 }
@@ -180,8 +178,8 @@ nav .profile-details .admin_name{
     /* width: 100%; */
     text-align: center;
     font-size: 15px;
-    font-weight: 500;
-    color: #333;
+    font-weight: bold;
+    color: #2697FF;
     margin: 0 10px;
     white-space: nowrap;
 }
@@ -252,6 +250,10 @@ nav .profile-details i{
 .flex-row{
   display: flex;
   flex-direction: row;
+}
+.recent-list-head{
+  justify-content: space-between;
+  align-items: center;
 }
 
 .recent-list-table{
@@ -646,7 +648,7 @@ nav .profile-details i{
 
 .profile-content{
   padding: 0 80px;
-  gap: 20px;
+  gap: 15px;
 }
 .frm-profile-edit{
   gap: 20px;
@@ -689,6 +691,18 @@ nav .profile-details i{
   cursor: pointer;
 }
 
+.box-role{
+  align-items: center;
+  gap: 20px;
+  margin-left: 50px;
+}
+
+.box-role select{
+  padding: 5px 20px;
+  outline: none;
+  cursor: pointer;
+}
+
 .pf-t-descriptions{
   gap: 10px;
 }
@@ -701,15 +715,19 @@ nav .profile-details i{
 }
 
 
-.btn-box-save{
+.box-function{
   margin: auto;
 }
+.box-function .btn-box{
+  align-items: center;
+  gap: 40px;
+}
 
-.btn-box-save button{
+.btn-box .btn{
   max-width: 100px;
   justify-content: center;
   margin: 5px auto;
-  padding: 8px 20px;
+  padding: 8px 15px;
   font-weight: bold;
   background-color: #279eff;
   color: #fff;
@@ -718,6 +736,16 @@ nav .profile-details i{
   cursor: pointer;
   align-items: center;
   gap: 5px;
+}
+
+.btn-box .btn-back{
+  max-width: 140px;
+  background-color: #ff4747;
+  text-decoration: none;
+}
+
+.btn-box span{
+  font-size: 15px;
 }
 
 .profiles input:focus, .profiles textarea:focus {

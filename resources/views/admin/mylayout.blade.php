@@ -66,7 +66,7 @@
             <div class="sidebar-button">
                 <i class='bx bx-menu sidebarBtn'></i>
                 <span class="managers">
-                    @yield('title')
+                    Admin
                 </span>
             </div>
             <div class="search-box">
@@ -84,6 +84,7 @@
         <div class="home-content">
             @yield('content')
         </div>
+       
     </section>
 
 
@@ -102,7 +103,7 @@
         }
     </script>
 
-
+    
     @yield('scripts')
 </body>
 </html>

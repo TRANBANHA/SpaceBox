@@ -35,6 +35,7 @@ class UserService
     public function getUserId($id){
         return User::where('user_id', $id)->first();
     }
+
 }
 
 

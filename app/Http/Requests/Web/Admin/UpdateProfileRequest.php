@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Web\Account;
+namespace App\Http\Requests\Web\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -26,6 +26,7 @@ class UpdateProfileRequest extends FormRequest
             'img_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gender' => 'required|boolean',
             'description' => 'nullable|string|max:1000',
+            'role_id' => 'nullable|integer',
         ];
     }
 }

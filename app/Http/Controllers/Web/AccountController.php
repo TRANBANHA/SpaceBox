@@ -8,6 +8,7 @@ use App\Http\Requests\Web\Account\LoginRequest;
 use App\Http\Requests\Web\Account\RegisterRequest;
 // use App\Http\Requests\Web\Account\UpdateProfileRequest;
 use App\Http\Requests\Web\Account\UpdateProfileRequest;
+use App\Http\Requests\Web\Account\UpdateProfileUserRequest;
 use App\Mail\ResetPassword;
 use App\Mail\VerifyAccount;
 use App\Models\User;
@@ -136,32 +137,32 @@ class AccountController extends Controller
     
     
     // Update profile
-    public function updateProfile(UpdateProfileRequest $updateProfileRequest)
+    public function updateProfile(UpdateProfileUserRequest $updateProfileUserRequest)
     {
-        $request = $updateProfileRequest->validated();
+        $request = $updateProfileUserRequest->validated();
         
-        $admin = auth()->user();
+        $user = auth()->user();
 
-        $admin->username = $request['username'];
-        $admin->gender = $request['gender'];
-        $admin->description = $request['description'];
+        $user->username = $request['username'];
+        $user->gender = $request['gender'];
+        $user->description = $request['description'];
 
-        if($updateProfileRequest->hasFile('fileImg')){
-            if ($admin->img_path) {
-                Cloudinary::destroy($admin->img_path);
+        if($updateProfileUserRequest->hasFile('fileImg')){
+            if ($user->img_path) {
+                Cloudinary::destroy($user->img_path);
             }
 
 
-            $imgUploadFile = Cloudinary::upload($updateProfileRequest->file('fileImg')->getRealPath())->getSecurePath();
+            $imgUploadFile = Cloudinary::upload($updateProfileUserRequest->file('fileImg')->getRealPath())->getSecurePath();
 
 
             if ($imgUploadFile) {
-                $admin->img_path = $imgUploadFile;
+                $user->img_path = $imgUploadFile;
             } else {
                 return redirect()->back()->with('error', 'Tải ảnh không thành công');
             }
         }
-        $admin->save();
+        $user->save();
         return redirect()->back()->with('success', 'Cập nhật thông tin thành công');
 
     }

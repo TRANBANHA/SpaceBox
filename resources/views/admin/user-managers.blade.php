@@ -1,21 +1,32 @@
 @extends('admin.mylayout')
 
-@section('title')
+<!-- @section('title')
     Danh sách người dùng
-@endsection
+@endsection -->
 
 
 @section('content')
   <div class="list-boxes">
     <div class="recent-list box">
-      <div class="btn-addUser flex-row">
-        <i class='bx bxs-user-plus'></i>
-        <span>Add new</span>
+      <div class="recent-list-head flex-row">
+        <div class="btn-addUser flex-row">
+          <i class='bx bxs-user-plus'></i>
+          <span>Add new</span>
+        </div>
+        <div class="notifi-box">
+          @if(session('deleteSuccess'))
+            <span id="notification-success" class="auth-notification" style="color: #00ff00;text-align: center;display: block;">{{ session('deleteSuccess') }}</span>
+          @endif          
+        </div>
+       
       </div>
       <div class="recent-list-table table-head flex-row">
         <div class="div-check flex-row">
-          <input type="checkbox">
-          <span>All</span>
+          @if(count($users) > 1)
+            <input type="checkbox">
+            <span>All</span>
+          @endif
+          
         </div>
         <div class="user-box" style="text-align:left;">Thông tin người dùng</div>
         <div class="user-verify">Xác thực</div>
@@ -27,7 +38,7 @@
       @foreach ($users as $user)
         <div class="recent-list-table table-content flex-row">
           <div class="div-check flex-row">
-            <input type="checkbox" class="select-user" value="{{ $user->user_id }}">
+            <input name="user_id[]" type="checkbox" class="select-user" value="{{ $user->user_id }}">
           </div>
           <div class="user-box flex-row">
             <div class="user-avt">
@@ -50,8 +61,13 @@
             <!-- Dropdown Menu -->
             <div class="action-menu">
               <ul>
+                <li><a href="{{ route('admin.updateUserForm', $user->user_id ) }}" class="">Sửa thông tin</a></li>
                 <li><a href="#" class="open-modal-sendEmail-resetPass">Reset password</a></li>
-                <li><a href="#" class="">Phân quyền</a></li>
+                @if($user->status)
+                  <li><a href="#" class="">Khoá tài khoản</a></li>
+                @else
+                  <li><a href="#" class="">Mở khoá tài khoản</a></li>
+                @endif
               </ul>
             </div>
           </div>     
@@ -82,7 +98,7 @@
           @csrf
           @method('DELETE')
           
-          <input type="hidden" name="user_ids" id="user_ids">
+          <input type="hidden" name="user_ids[]" id="user_ids">
           <button class="btn-box flex-row btn-delete-selected" type="submit">
               <i class='bx bx-trash'></i>
               <span>Xóa tài khoản</span>
@@ -91,28 +107,24 @@
       </div>
     </div>
   </div>
+   <!-- Modal section -->
+    
 @endsection
 
 
 @section('scripts')
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('#notification-success').delay(3000).fadeOut();
+    });
+  </script>
 
   <!-- Lắng nghe sự kiện click vào checkbox -->
   <script>
     $(document).ready(function () {
-      // Xử lý checkbox "All" để chọn hoặc bỏ chọn tất cả
-      // $(document).on('change', '.table-head .div-check input[type="checkbox"]', function () {
-      //   const isChecked = $(this).is(':checked');
-      //   // Chọn hoặc bỏ chọn tất cả checkbox trong danh sách
-      //   $('.table-content .div-check input[type="checkbox"]').prop('checked', isChecked);
-      //   // Hiển thị hoặc ẩn phần Admin functions
-      //   if (isChecked) {
-      //       $('.box-functions').fadeIn();
-      //   } else {
-      //       $('.box-functions').fadeOut();
-      //   }
-      // });
+      
       $(document).on('change', '.table-head .div-check input[type="checkbox"]', function () {
         const isChecked = $(this).is(':checked');
         // Chọn hoặc bỏ chọn tất cả checkbox trong danh sách
@@ -142,24 +154,29 @@
   <!-- Lắng nghe sự kiện click vào nút "Xóa tài khoản" -->
   <script>
     $(document).ready(function () {
+    // Sự kiện click vào nút "Xóa tài khoản"
       $('.btn-delete-selected').on('click', function (e) {
-          e.preventDefault(); 
-          // Thu thập danh sách user_id từ các checkbox đã chọn
-          let selectedIds = [];
-          $('.select-user:checked').each(function () {
-              selectedIds.push($(this).val());
-          });
-          // Gán danh sách ID vào input ẩn
-          $('#user_ids').val(selectedIds.join(',')); // Chuỗi các ID, phân tách bằng dấu phẩy
-          // Kiểm tra nếu không có ID nào được chọn
-          if (selectedIds.length === 0) {
-              alert('Vui lòng chọn ít nhất một tài khoản để xóa.');
-              return;
-          }
-          // Gửi form
-          $('#deleteUsersForm').submit();
+        e.preventDefault(); // Ngăn chặn form submit mặc định
+
+        // Lấy tất cả checkbox được chọn
+        const checkboxes = document.querySelectorAll('input[name="user_id[]"]:checked');
+        // Tạo một mảng chứa ID
+        const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+        // Kiểm tra nếu không có ID nào được chọn
+        if (selectedIds.length === 0) {
+            alert('Vui lòng chọn ít nhất một tài khoản để xóa.');
+            return;
+        }
+
+        // Gửi mảng ID qua input ẩn
+        $('#user_ids').val(selectedIds);
+
+        // Gửi form
+        $('#deleteUsersForm').submit();
       });
     });
+
   </script>
 
 

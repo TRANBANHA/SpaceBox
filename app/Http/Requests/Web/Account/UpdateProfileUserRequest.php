@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Web\Admin;
+namespace App\Http\Requests\Web\Account;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteRequest extends FormRequest
+class UpdateProfileUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,10 @@ class DeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_ids' => ['nullable', 'array'],
-            'user_ids.*' => ['integer', 'exists:users,user_id'],
+            'username' => 'nullable|string|max:255',
+            'img_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gender' => 'required|boolean',
+            'description' => 'nullable|string|max:1000',
         ];
     }
 }

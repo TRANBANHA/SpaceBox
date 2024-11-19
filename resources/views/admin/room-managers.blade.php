@@ -1,8 +1,8 @@
 @extends('admin.mylayout')
 
-@section('title')
+<!-- @section('title')
     Danh sách phòng chat
-@endsection
+@endsection -->
 
 
 @section('content')

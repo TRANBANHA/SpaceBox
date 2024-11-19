@@ -35,12 +35,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     Route::get('/quan-ly-nguoi-dung', [AdminController::class, 'getListUser'])->name('getListUser');
     Route::post('/quan-ly-nguoi-dung/resetpass', [AccountController::class, 'sendEmailResetPass'])->name('sendResetPass');
     Route::delete('/quan-ly-nguoi-dung/delete', [AdminController::class, 'deleteUser'])->name('deleteUsers');
+    
+    Route::get('/quan-ly-nguoi-dung/update-user/{user_id}', [AdminController::class, 'updateUserForm'])->name('updateUserForm');
+    Route::patch('/quan-ly-nguoi-dung/update-user/{user_id}', [AdminController::class, 'updateProfileUser'])->name('updateProfileUser');
+    
     // Quản lý phòng chat
     Route::get('/quan-ly-phong-chat', [AdminController::class, 'getListRoom'])->name('getListRoom');
     
     // Xem, sửa profile
     Route::get('/profile', [AdminController::class, 'getProfile'])->name('getProfile');
-    Route::patch('/update-profile', [AccountController::class, 'updateProfile'])->name('updateProfile');
+    Route::patch('/update-profile', [AdminController::class, 'updateProfile'])->name('updateProfile');
 
     // Change password
     Route::get('/change-pass', [AdminController::class, 'changePassForm'])->name('changePassForm');

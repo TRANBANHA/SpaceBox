@@ -1,8 +1,8 @@
 @extends('admin.mylayout')
 
-@section('title')
+<!-- @section('title')
     Thay đổi mật khẩu
-@endsection
+@endsection -->
 
 @section('content')
     <div class="mainDiv">
