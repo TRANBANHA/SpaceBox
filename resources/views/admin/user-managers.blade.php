@@ -9,10 +9,10 @@
   <div class="list-boxes">
     <div class="recent-list box">
       <div class="recent-list-head flex-row">
-        <div class="btn-addUser flex-row">
+        <a class="btn-addUser flex-row" href="{{ route('admin.addUserForm')}}">
           <i class='bx bxs-user-plus'></i>
           <span>Add new</span>
-        </div>
+        </a>
         <div class="notifi-box">
           @if(session('deleteSuccess'))
             <span id="notification-success" class="auth-notification" style="color: #00ff00;text-align: center;display: block;">{{ session('deleteSuccess') }}</span>
@@ -55,18 +55,26 @@
           </div>
 
           <div class="user-gender">{{ $user->gender ? 'Nam' : 'Nữ' }}</div>
-          <div class="user-status" style="font-weight: bold; color: {{ $user->status ? '#00ed3e' : '#ff4400' }}">{{ $user->status ? 'Active' : 'Inactive' }}</div>
+          <div class="user-status" style="font-weight: bold; color: {{ $user->status ? '#00ed3e' : '#ff1500' }}">{{ $user->status ? 'Active' : 'Inactive' }}</div>
           <div class="admin-action">
             <i class='bx bx-dots-vertical-rounded'></i>
             <!-- Dropdown Menu -->
             <div class="action-menu">
               <ul>
-                <li><a href="{{ route('admin.updateUserForm', $user->user_id ) }}" class="">Sửa thông tin</a></li>
+                <li><a href="{{ route('admin.updateUserForm', $user->user_id ) }}">Sửa thông tin</a></li>
                 <li><a href="#" class="open-modal-sendEmail-resetPass">Reset password</a></li>
                 @if($user->status)
-                  <li><a href="#" class="">Khoá tài khoản</a></li>
+                  <form action="{{ route('admin.lockAccountUser', $user->user_id) }}" method="post">
+                    @csrf
+                    @method('PATCH')
+                    <li><button type="submit" name="lockAccountUser">Khoá tài khoản</button></li>
+                  </form>
                 @else
-                  <li><a href="#" class="">Mở khoá tài khoản</a></li>
+                <form action="{{ route('admin.unlockAccountUser', $user->user_id) }}" method="post">
+                    @csrf
+                    @method('PATCH')
+                    <li><button type="submit" name="unlockAccountUser">Mở khoá tài khoản</button></li>
+                  </form>
                 @endif
               </ul>
             </div>

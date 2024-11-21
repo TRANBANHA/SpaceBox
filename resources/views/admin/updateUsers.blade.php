@@ -12,13 +12,13 @@
     <div class="profile-head flex-row">
       <div class="pf-h-box-info flex-row">
         <div class="pf-h-box-img">
-          <img id="profileImage" src="{{  $user->img_path }}" alt="">
+          <img id="profileImage" src="{{  $user->img_path ?? 'https://res.cloudinary.com/dy6y1gpgm/image/upload/v1731680383/male_q2q91r.png' }}" alt="">
         </div>
         <div class="pf-h-info flex-col">
           <div class="flex-col" style="gap:5px">
             <h3 class="h-name">{{  $user->username }}</h3>
             <h3 class="h-email">{{  $user->email }}</h3>
-            <span class="h-status" style="color:#00ba3b">{{  $user->status ? 'Active' : 'Inactive' }}</span>
+            <span class="h-status" style="color:{{  $user->status ? '#00ba3b' : '#ff1500' }};">{{  $user->status ? 'Active' : 'Inactive' }}</span>
           </div>
           <input type="file" name="fileImg" id="avatarInput" style="display: none;" onchange="previewImage(event)">
           <button class="change-avt-btn flex-row" type="button" onclick="document.getElementById('avatarInput').click();">
@@ -34,7 +34,7 @@
     </div>
     <div class="profile-content flex-col">
       <div class="pf-t-title">
-        <h4>Chỉnh sửa thông tin</h4>
+        <h4>Chỉnh sửa thông tin người dùng</h4>
       </div>
       <div class="pf-t-form">
         <div class="frm-profile-edit flex-col">

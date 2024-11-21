@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\ChangePasswordRequest;
+use App\Http\Requests\Web\Admin\AddUserRequest;
 use App\Http\Requests\Web\Admin\UpdateProfileRequest;
 use App\Http\Requests\Web\Admin\DeleteRequest;
 use App\Http\Requests\Web\Admin\DeleteUserRequest;
@@ -136,7 +137,6 @@ class AdminController extends Controller
                 Cloudinary::destroy($user->img_path);
             }
 
-
             $imgUploadFile = Cloudinary::upload($updateProfileRequest->file('fileImg')->getRealPath())->getSecurePath();
 
 
@@ -147,7 +147,43 @@ class AdminController extends Controller
             }
         }
         $user->save();
+
         return redirect()->back()->with('success', 'Cập nhật thông tin thành công');
 
+    }
+
+
+    public function lockAccountUser($user_id){
+        $user = $this->userService->getUserId($user_id);
+        $user->status = 0;
+        $user->save();
+        return redirect()->back()->with('success', 'Khóa tài khoản thành công');
+    }
+
+
+    public function unlockAccountUser($user_id){
+        $user = $this->userService->getUserId($user_id);
+        $user->status = 1;
+        $user->save();
+        return redirect()->back()->with('success', 'Mở khóa tài khoản thành công');
+    }
+
+
+    public function addUserForm(){
+        $roles = $this->roleService->getRole();
+        return view('admin.addUser', ['roles' => $roles]);
+    }
+
+    public function addUserAction(AddUserRequest $addUserRequest){
+        $request = $addUserRequest->validated();
+        $user = new User();
+        $user->username = $request['username'];
+        $user->email = $request['email'];
+        $user->password = Hash::make($request['password']);
+        $user->role_id = $request['role_id'];
+        $user->email_verified_at = now();
+        $user->status = 1;
+        $user->save();
+        return redirect()->route('admin.getListUser')->with('success', 'Thêm người dùng thành công');
     }
 }

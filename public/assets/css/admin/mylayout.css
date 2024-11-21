@@ -156,7 +156,7 @@ nav .search-box .bx-search{
     text-align: center;
     color: #fff;
     font-size: 17px;
-
+    cursor: pointer;
     transition: all 0.4 ease;
 }
 .home-section nav .profile-details{
@@ -219,6 +219,11 @@ nav .profile-details i{
   margin-right: 0;
   gap: 5px;
   cursor: pointer;
+  border-radius: 2px;
+  text-decoration: none;
+}
+.recent-list .btn-addUser:hover{
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .btn-addUser i{
@@ -314,10 +319,7 @@ nav .profile-details i{
   border-radius: 50%;
 }
 
-/* .div-check{
-  width: 25px;
-  text-align: center;
-} */
+
 .user-box .user-info{
   align-items: flex-start;
 }
@@ -339,10 +341,7 @@ nav .profile-details i{
   /* width: 100%; */
 }
 
-/* .div-check {
-  width: 5%;
-  text-align: center;
-} */
+
 
 .user-box {
   width: 30%;
@@ -412,6 +411,14 @@ nav .profile-details i{
 }
 
 
+.action-menu li button{
+  border: none;
+  font-size: 14px;
+  padding: 12px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
 
 /* Căn chỉnh biểu tượng ba chấm */
 .admin-action {
@@ -424,6 +431,65 @@ nav .profile-details i{
   color: #333;
 }
 
+/* Add Users */
+.box-form-add{
+  margin: 40px;
+  padding: 10px;
+}
+.form-addUser{
+  margin: auto;
+  width: 500px;
+  padding: 30px 60px;
+  background-color: #fff;
+  gap: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-addUser .box-ip{
+  gap: 5px;
+  font-size: 16px;
+}
+
+.form-addUser .box-ip h3{
+  font-size: 20px;
+  font-weight: 600;
+  color: #0083e1;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.form-addUser .box-ip label{
+  font-size: 16px;
+  color: #333;
+}
+
+
+.form-addUser .box-ip .ip-add{
+  width: 100%;
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 5px;
+  border: 1px solid #525252;
+  color: #525252;
+  outline: none;
+}
+
+.form-addUser .box-btn{
+  text-align: center;
+}
+
+.form-addUser .box-btn button{
+  background-color: #009cff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  border: 1px solid #0083e1;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 15px;
+}
 
 /* Modal sendEmail resetPass */
 .modal-sendEmail-resetPass {
@@ -525,7 +591,11 @@ nav .profile-details i{
   align-items: center;
   border: none;
   cursor: pointer;
-  box-shadow: 0 0 4px 1px rgb(0 0 0 / 16%);
+  border-radius: 2px;
+}
+
+.box-functions .btn-box:hover{
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .box-functions .btn-box i{
@@ -538,7 +608,7 @@ nav .profile-details i{
 }
 
 
-/* Modal Confirm Delete */
+
 
 
 
@@ -597,7 +667,7 @@ nav .profile-details i{
 .pf-h-info .h-status{
   
   margin-left: 3px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
 }
 

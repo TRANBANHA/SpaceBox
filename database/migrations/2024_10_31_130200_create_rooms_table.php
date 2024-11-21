@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id('room_id');
             $table->string('room_name'); 
+            $table->string('avt_path')->default('https://res.cloudinary.com/dy6y1gpgm/image/upload/v1732224761/icon_group_leejca.png');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
             $table->softDeletes();
