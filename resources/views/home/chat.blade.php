@@ -1,10 +1,10 @@
 <x-my-layout>
     <x-slot name="linkcss">
-        <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/chat.css') }}">
     </x-slot>
 
-    <!-- @include('components.header') -->
-    <div class="home">
+   
+    <div class="chat">
         <div class="landing-page flex-row">
             <div class="ldp-content flex-col">
                 <h1>home</h1>
@@ -18,5 +18,4 @@
             </div>
         </div>
     </div>
-    @include('components.footer')
 </x-my-layout>

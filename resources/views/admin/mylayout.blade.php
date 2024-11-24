@@ -17,7 +17,7 @@
         <div class="logo-details">
             <!-- <i class='bx bxl-dropbox' ></i> -->
             <img src="{{ url('assets/images/logo-app-2.png') }}" alt="">
-            <a href="{{ route('admin.home.index') }}" class="logo_name">SpaceBox</a>
+            <a href="{{ route('admin.home.chat') }}" class="logo_name">SpaceBox</a>
         </div>
         <ul class="nav-links">
             

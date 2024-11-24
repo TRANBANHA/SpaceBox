@@ -14,8 +14,8 @@
           <span>Add new</span>
         </a>
         <div class="notifi-box">
-          @if(session('deleteSuccess'))
-            <span id="notification-success" class="auth-notification" style="color: #00ff00;text-align: center;display: block;">{{ session('deleteSuccess') }}</span>
+          @if(session('admin-success'))
+            <span id="notification-success" class="auth-notification" style="color: #00ff00;text-align: center;display: block;">{{ session('admin-success') }}</span>
           @endif          
         </div>
        

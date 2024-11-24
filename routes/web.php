@@ -49,6 +49,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     
     // Quản lý phòng chat
     Route::get('/quan-ly-phong-chat', [AdminController::class, 'getListRoom'])->name('getListRoom');
+    Route::delete('/quan-ly-phong-chat/delete', [AdminController::class, 'deleteRoom'])->name('deleteRoom');
+    Route::post('/quan-ly-phong-chat/addroom', [AdminController::class, 'addRoom'])->name('addRoom');
+    Route::patch('/quan-ly-phong-chat/updateroom/{room_id}', [AdminController::class, 'updateRoom'])->name('updateRoom');
+
     
     // Xem, sửa profile
     Route::get('/profile', [AdminController::class, 'getProfile'])->name('getProfile');
@@ -59,7 +63,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     Route::put('/change-pass', [AdminController::class, 'changePassAction'])->name('changePass');
     
     // Đăng nhập vào spacebox
-    Route::get('/spacebox', [HomeController::class, 'index'])->name('home.index');
+    Route::get('/spacebox', [HomeController::class, 'chat'])->name('home.chat');
 
 
 });
@@ -68,7 +72,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
 // Dành cho Users
 Route::group(['prefix' => 'spacebox', 'middleware' => 'check_user' ,'as' => 'spacebox.'], function(){
 
-    Route::get('/', [HomeController::class, 'index'])->name('home.index');
+    Route::get('/', [HomeController::class, 'chat'])->name('home.chat');
 });
 
 

@@ -303,6 +303,7 @@ nav .profile-details i{
   cursor: pointer;
 }
 
+/* Form quản lý người dùng */
 .recent-list-table .user-box{
   min-width: 350px;
   padding: 5px 0px;
@@ -334,8 +335,168 @@ nav .profile-details i{
 }
 
 
+/* Form quản lý phòng chat  */
+.home-content .list-boxes .recent-list-room{
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  gap: 15px;
+  padding: 20px 20px;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.recent-list .btn-addRoom{
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  background: #00e060;
+  color: #fff;
+  width: 130px;
+  margin-right: 0;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 2px;
+  text-decoration: none;
+}
+.recent-list .btn-addRoom:hover{
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.btn-addRoom i{
+  font-size: 20px;
+}
+
+.btn-addRoom span{
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.recent-list-table {
+  display: grid;
+  grid-template-columns: 50px 2fr 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.table-head, .table-content {
+  display: contents;
+}
+.recent-list-room .table-content{
+  padding: 10px 0;
+}
+
+.recent-list-room .table-head > div, .recent-list-room .table-content > div {
+  width: 15%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.recent-list-room .table-head .div-check, .recent-list-room .table-content .div-check {
+  max-width: 20px;
+  text-align: center;
+}
+
+.recent-list-room .table-head .room-box, .recent-list-room .table-content .room-box {
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+}
+
+.table-content .room-avt {
+  margin-right: 10px;
+}
+
+.table-content .room-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.box-functions {
+  display: none;
+  margin-top: 20px;
+}
+
+.modal-addRoom, .modal-updateRoom  {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Nền tối mờ */
+  display: none; /* Ẩn modal khi chưa hiển thị */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-addRoom-content, .modal-updateRoom-content  {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 400px;
+  width: 90%;
+  animation: fadeInScale 0.3s ease-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Header */
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-h-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.bx-x-circle {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.bx-x-circle:hover {
+  color: red;
+}
+
+#addRoomForm .input-box {
+  text-align: center;
+}
+
+#addRoomForm .button-box {
+  text-align: center;
+  margin-top: 20px;
+}
+#updateRoomForm .input-box {
+  text-align: center;
+}
+
+#updateRoomForm .button-box {
+  text-align: center;
+  margin-top: 20px;
+}
+/* Fade-in Effect */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
 
+
+/*  */
 .flex-row {
   display: flex;
   /* width: 100%; */
@@ -354,6 +515,15 @@ nav .profile-details i{
 .user-info {
   display: flex;
   flex-direction: column;
+}
+.room-box .room-avt{
+  width: 40px;
+  height: 40px;
+}
+.room-box .room-avt img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .user-verify{

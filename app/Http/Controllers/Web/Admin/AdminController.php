@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\ChangePasswordRequest;
+use App\Http\Requests\Web\Admin\AddRoomRequest;
 use App\Http\Requests\Web\Admin\AddUserRequest;
+use App\Http\Requests\Web\Admin\DeleteRoomRequest;
 use App\Http\Requests\Web\Admin\UpdateProfileRequest;
 use App\Http\Requests\Web\Admin\DeleteRequest;
 use App\Http\Requests\Web\Admin\DeleteUserRequest;
+use App\Http\Requests\Web\Admin\UpdateRoomRequest;
+use App\Models\Room;
 use App\Models\User;
 use App\Services\RoleService;
+use App\Services\RoomService;
 use App\Services\UserService;
 use Auth;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -17,11 +22,13 @@ use Hash;
 
 class AdminController extends Controller
 {
-    protected $userService;
     protected $roleService;
-    public function __construct(UserService $userService, RoleService $roleService){
-        $this->userService = $userService;
+    protected $userService;
+    protected $roomService;
+    public function __construct(RoleService $roleService, UserService $userService, RoomService $roomService){
         $this->roleService = $roleService;
+        $this->userService = $userService;
+        $this->roomService = $roomService;
     }
     public function index(){
         $list = $this->userService->getList();
@@ -33,10 +40,7 @@ class AdminController extends Controller
         $list = $this->userService->getList();
         return view('admin.user-managers', ['users' => $list]);
     }
-    public function getListRoom(){
-
-        return view('admin.room-managers');
-    }
+    
 
     public function getProfile(){
         if(Auth::user()->role_id == 1){
@@ -69,6 +73,10 @@ class AdminController extends Controller
         }
     }
 
+
+    // Quản lý người dùng
+
+
     public function deleteUser(DeleteUserRequest $deleteUserRequest)
     {
         $request = $deleteUserRequest->validated();
@@ -81,7 +89,7 @@ class AdminController extends Controller
         // User::whereIn('id', $request['user_ids'])->forceDelete();
 
         
-        return redirect()->back()->with('deleteSuccess', 'Xoá người dùng thành công.');
+        return redirect()->back()->with('admin-success', 'Xoá người dùng thành công.');
     }
 
 
@@ -157,7 +165,7 @@ class AdminController extends Controller
         $user = $this->userService->getUserId($user_id);
         $user->status = 0;
         $user->save();
-        return redirect()->back()->with('success', 'Khóa tài khoản thành công');
+        return redirect()->back()->with('admin-success', 'Khóa tài khoản thành công');
     }
 
 
@@ -165,7 +173,7 @@ class AdminController extends Controller
         $user = $this->userService->getUserId($user_id);
         $user->status = 1;
         $user->save();
-        return redirect()->back()->with('success', 'Mở khóa tài khoản thành công');
+        return redirect()->back()->with('admin-success', 'Mở khóa tài khoản thành công');
     }
 
 
@@ -184,6 +192,54 @@ class AdminController extends Controller
         $user->email_verified_at = now();
         $user->status = 1;
         $user->save();
-        return redirect()->route('admin.getListUser')->with('success', 'Thêm người dùng thành công');
+        return redirect()->route('admin.getListUser')->with('admin-success', 'Thêm người dùng thành công');
+    }
+
+
+    // Quản lý room chat
+
+    public function getListRoom(){
+        $rooms = $this->roomService->getList();
+        return view('admin.room-managers', ['rooms' => $rooms]);
+    }
+
+    public function deleteRoom(DeleteRoomRequest $deleteRoomRequest){
+        $request = $deleteRoomRequest->validated();
+
+        $roomIdsString = $request['room_ids'][0];
+
+        $roomIds = explode(',', $roomIdsString);
+
+        Room::whereIn('room_id', $roomIds)->delete();
+
+        return redirect()->back()->with('admin-success', 'Xoá phòng chat thành công.');
+    }
+
+
+    public function addRoom(AddRoomRequest $addRoomRequest){
+        $request = $addRoomRequest->validated();
+
+        $room = $this->roomService->addRoom($request);
+
+        if($room){
+            return redirect()->route('admin.getListRoom')->with('admin-success', 'Thêm phòng chat thành công');
+        }
+
+        return redirect()->back()->with('error', 'Thêm phòng chat không thành công');
+
+    }
+
+
+    public function updateRoom(UpdateRoomRequest $updateRoomRequest, $room_id){
+        $request = $updateRoomRequest->validated();
+
+        $room = $this->roomService->getRoomId($room_id);
+
+        $room->room_name = $request['room_name'];
+
+        $room->save();
+
+        return redirect()->back()->with('admin-success', 'Cập nhật phòng chat thành công');
+
     }
 }

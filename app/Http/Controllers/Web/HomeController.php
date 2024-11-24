@@ -11,8 +11,8 @@ class HomeController extends Controller
         return view('home.landingpage');
     }
 
-    public function index(){
+    public function chat(){
 
-        return view('home.index');
+        return view('home.chat');
     }
 }
