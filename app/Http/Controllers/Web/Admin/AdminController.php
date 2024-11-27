@@ -25,27 +25,35 @@ class AdminController extends Controller
     protected $roleService;
     protected $userService;
     protected $roomService;
-    public function __construct(RoleService $roleService, UserService $userService, RoomService $roomService){
+    public function __construct(RoleService $roleService, UserService $userService, RoomService $roomService,){
         $this->roleService = $roleService;
         $this->userService = $userService;
         $this->roomService = $roomService;
     }
+
+    public function getFirstRoom(){
+        $room = $this->roomService->getDefaultRoom(Auth::user()->user_id)->first();
+        return $room;
+    }
+
     public function index(){
         $list = $this->userService->getList();
-        return view('admin.user-managers', ['users' => $list]);
+        $room = $this->getFirstRoom();
+        return view('admin.user-managers', ['users' => $list, 'room_id' => $room->room_id]);
     }
 
     public function getListUser(){
-
         $list = $this->userService->getList();
-        return view('admin.user-managers', ['users' => $list]);
+        $room = $this->getFirstRoom();
+        return view('admin.user-managers', ['users' => $list, 'room_id' => $room->room_id]);
     }
     
 
     public function getProfile(){
+        $room = $this->getFirstRoom();
         if(Auth::user()->role_id == 1){
             $admin = $this->userService->getUserId(Auth::user()->user_id);
-            return view('admin.profile', ['admin' => $admin]);
+            return view('admin.profile', ['admin' => $admin, 'room_id' => $room->room_id]);
         }
     }
 
@@ -53,7 +61,8 @@ class AdminController extends Controller
 
 
     public function changePassForm(){
-        return view('admin.change-pass');
+        $room = $this->getFirstRoom();
+        return view('admin.change-pass', ['room_id' => $room->room_id]);    
     } 
 
     public function changePassAction(ChangePasswordRequest $changePasswordRequest){
@@ -96,7 +105,9 @@ class AdminController extends Controller
     public function updateUserForm($user_id){
         $user = $this->userService->getUserId($user_id);
         $roles = $this->roleService->getRole();
-        return view('admin.updateUsers', ['user' => $user, 'roles' => $roles]);
+        $room = $this->getFirstRoom();
+
+        return view('admin.updateUsers', ['user' => $user, 'roles' => $roles, 'room_id' => $room->room_id]);
     }
     
     public function updateProfile(UpdateProfileRequest $updateProfileRequest)
@@ -179,7 +190,8 @@ class AdminController extends Controller
 
     public function addUserForm(){
         $roles = $this->roleService->getRole();
-        return view('admin.addUser', ['roles' => $roles]);
+        $room = $this->getFirstRoom();
+        return view('admin.addUser', ['roles' => $roles, 'room_id' => $room->room_id]);
     }
 
     public function addUserAction(AddUserRequest $addUserRequest){
@@ -200,7 +212,8 @@ class AdminController extends Controller
 
     public function getListRoom(){
         $rooms = $this->roomService->getList();
-        return view('admin.room-managers', ['rooms' => $rooms]);
+        $firstRoom = $this->getFirstRoom();
+        return view('admin.room-managers', ['rooms' => $rooms,  'room_id' => $firstRoom->room_id]);
     }
 
     public function deleteRoom(DeleteRoomRequest $deleteRoomRequest){
@@ -220,6 +233,8 @@ class AdminController extends Controller
         $request = $addRoomRequest->validated();
 
         $room = $this->roomService->addRoom($request);
+
+        // $roomRoleUser = $this->roomService->addRoomRoleByUser($room);
 
         if($room){
             return redirect()->route('admin.getListRoom')->with('admin-success', 'Thêm phòng chat thành công');

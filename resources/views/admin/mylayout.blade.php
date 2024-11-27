@@ -17,7 +17,7 @@
         <div class="logo-details">
             <!-- <i class='bx bxl-dropbox' ></i> -->
             <img src="{{ url('assets/images/logo-app-2.png') }}" alt="">
-            <a href="{{ route('admin.home.chat') }}" class="logo_name">SpaceBox</a>
+            <a href="{{ route('admin.home.chat', $room_id) }}" class="logo_name">SpaceBox</a>
         </div>
         <ul class="nav-links">
             
@@ -50,6 +50,13 @@
                 <a href="#">
                     <i class='bx bx-cog' ></i>
                     <span class="links_name">Setting</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.home.chat', $room_id) }}">
+                    <i class='bx bx-home' ></i>
+                    <span class="links_name">Spacebox Chat</span>
                 </a>
             </li>
 

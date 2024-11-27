@@ -3,6 +3,7 @@ namespace App\Services;
 
 
 use App\Models\User;
+use Auth;
 use Hash;
 use Log;
 
@@ -28,7 +29,9 @@ class UserService
     }
 
     public function getList(){
-        return $this->user->where('role_id', '!=', '1')->get();
+        return $this->user  ->where('role_id', '!=', '1')
+                            ->where('user_id', '!=', Auth::user()->user_id)
+                            ->get();
     }
 
 

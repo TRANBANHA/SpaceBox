@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id('message_id'); // Khóa chính cho bảng messages
             $table->unsignedBigInteger('user_id'); // ID của người gửi
             $table->unsignedBigInteger('room_id'); // ID của phòng chat
+            $table->boolean('is_current_user')->default(false); // Đánh dấu tin nhắn của người dùng hiện tại
             $table->text('content'); // Nội dung tin nhắn
             $table->string('file_path')->nullable(); // Đường dẫn đến tệp (có thể null nếu không có tệp)
+            
             $table->boolean('is_pinned')->default(false); // Đánh dấu tin nhắn có được ghim hay không
+            $table->boolean('is_deleted')->default(false); // Đánh dấu tin nhắn đã bị xóa
+
             $table->timestamps(); // Timestamps cho created_at và updated_at
             $table->softDeletes(); // Cột để hỗ trợ soft deletes
 

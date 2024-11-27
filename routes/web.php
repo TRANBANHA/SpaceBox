@@ -62,8 +62,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     Route::get('/change-pass', [AdminController::class, 'changePassForm'])->name('changePassForm');
     Route::put('/change-pass', [AdminController::class, 'changePassAction'])->name('changePass');
     
+
     // Đăng nhập vào spacebox
-    Route::get('/spacebox', [HomeController::class, 'chat'])->name('home.chat');
+    Route::get('/spacebox/r{room_id}', [HomeController::class, 'chat'])->name('home.chat');
+    
+    // Route::get('/messages/{room_id}', [HomeController::class, 'getMessagesInRoom'])->name('chat.messages');
+    Route::post('/spacebox/addroom', [HomeController::class, 'addroom'])->name('chat.addroom');
+    Route::post('/spacebox/sendMess', [HomeController::class, 'sendMessage'])->name('chat.sendMess');
 
 
 });
@@ -72,7 +77,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
 // Dành cho Users
 Route::group(['prefix' => 'spacebox', 'middleware' => 'check_user' ,'as' => 'spacebox.'], function(){
 
-    Route::get('/', [HomeController::class, 'chat'])->name('home.chat');
+    // Route::get('/', [HomeController::class, 'chat'])->name('home.chat');
+    Route::get('/r{room_id}', [HomeController::class, 'chat'])->name('home.chat');
+    // Route::get('/messages/{room_id}', [HomeController::class, 'getMessagesInRoom'])->name('chat.messages');
+
+    Route::post('/addroom', [HomeController::class, 'addroom'])->name('chat.addroom');
+    Route::post('/sendMess', [HomeController::class, 'sendMessage'])->name('chat.sendMess');
 });
 
 

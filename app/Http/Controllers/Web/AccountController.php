@@ -12,6 +12,7 @@ use App\Http\Requests\Web\Account\UpdateProfileUserRequest;
 use App\Mail\ResetPassword;
 use App\Mail\VerifyAccount;
 use App\Models\User;
+use App\Services\RoomService;
 use App\Services\UserService;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Hash;
@@ -22,9 +23,11 @@ use Str;
 class AccountController extends Controller
 {
     protected $userService;
+    protected $roomService;
 
-    public function __construct(UserService $userService){
+    public function __construct(UserService $userService, RoomService $roomService){
         $this->userService = $userService;
+        $this->roomService = $roomService;
     }
 
 
@@ -107,12 +110,19 @@ class AccountController extends Controller
             // Khởi tạo phiên làm việc
             $loginRequest->session()->regenerate();
     
+            $room = $this->roomService->getDefaultRoom(Auth::user()->user_id)->first();
             // Phân quyền dựa trên role_id
             switch (Auth::user()->role_id) {
                 case 1: // Admin
                     return redirect()->route('admin.index');
                 default: // Các quyền khác
-                    return redirect()->route('spacebox.home.index');
+                   
+
+                    if($room){
+                        return redirect()->route('spacebox.home.chat', $room->room_id);
+                    } else {
+                        return redirect()->route('spacebox.home.chat', 0);
+                    }
             }
         } else {
             return redirect()->route('account.login')->with('errors', [

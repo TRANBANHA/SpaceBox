@@ -12,7 +12,7 @@
                 <div id="typewriter-container">
                     <p id="typewriter"></p>
                 </div>
-                <a href="{{ route('account.register') }}" class="btn-primary">
+                <a href="{{ route('account.login') }}" class="btn-primary">
                     <i class="fa-solid fa-arrow-right"></i> Bắt đầu ngay
                 </a>
                 
