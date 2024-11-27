@@ -34,7 +34,7 @@
                 <div class="header-group">
                     <input type="text" placeholder="Search on SpaceBox" class="search-input">
                     <div class="add-group">
-                        <button class="btn-add-group" id="btn-add-group"><i class='bx bx-group' ></i></button>
+                        <button class="btn-add-group" id="btn-add-group"><i class='bx bx-group'></i></button>
 
 
                         <div class="form-container" id="form-add">
@@ -59,12 +59,12 @@
                                     </div>                                  
                                 </div>
                                 
-                              <div class="list">
-                                <!-- Các thành viên có thể thêm từ cơ sở dữ liệu -->
-                                 @foreach ($listUsers as $user)
-                                    <label><input type="checkbox" name="members[]" value="{{ $user->user_id }}">{{ $user->username }}</label>
-                                 @endforeach
-                              </div>
+                               
+                                    <div class="list">
+                                        @foreach ($listUsers as $user)
+                                            <label><input type="checkbox" name="members[]" value="{{ $user->user_id }}">{{ $user->username }}</label>
+                                        @endforeach
+                                    </div>
                         
                               <div class="buttons">
                                 <button type="reset" class="cancel-btn" id="cancel-btn">Hủy</button>
@@ -82,15 +82,22 @@
                 <ul>
                     @if ($rooms)
                         @foreach ($rooms as $room_i)
-                            <a href="{{ route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room_i->room_id) }}" class="chat-item">
+                            <a href="{{ route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room_i->room_id) }}" 
+                                class="chat-item" 
+                                id="room_{{ $room_i->room_id }}" 
+                                data-room-id="{{ $room_i->room_id }}" 
+                                onclick="selectRoom(event, {{ $room_i->room_id }})">
+                           
+                                
                                 <img src="{{ $room_i->avt_path }}" alt="Logo" class="avatar">
                                 <div class="chat-info">
                                     <h4>{{ $room_i->room_name }}</h4>
-                                    <p style="font-weight: bold;">Message</p>
+                                    <!-- Hiển thị tin nhắn mới nhất và thời gian -->
+                                        <p style="font-weight: bold;">{{ $room_i->latestMess }}</p>
                                 </div>
                                 <div class="chat-meta">
-                                    <span class="time">15:23</span>
-                                    <span class="unread">3</span>
+                                    <span class="time">{{ $room_i->latestMessTime->format('H:i') }}</span>
+                                    <!-- <span class="unread">3</span> -->
                                 </div>
                             </a>
                         @endforeach
@@ -110,25 +117,31 @@
                         <p class="status">Online</p>
                     </div>
                 </div>
-                <div class="call-Information">
-                    <a href="#"><i class='bx bxs-phone-call'></i></a>
-                    <a href="#"><i class='bx bxs-video'></i></a>
-                    <a href="#" id="toggleDirectory" ><i class='bx bxs-error-circle'></i></a>
-                </div>           
+                @if ($messages)
+                    <div class="call-Information">
+                        <a href="#"><i class='bx bxs-phone-call'></i></a>
+                        <a href="#"><i class='bx bxs-video'></i></a>
+                        <a href="#" id="toggleDirectory" ><i class='bx bxs-error-circle'></i></a>
+                    </div>         
+                @endif  
             </header>
 
             
 
+            @if ($messages)
             <div class="chat-content">
-                <div class="message-ghim">
-                    <button class="ghim"><i class='bx bxs-pin'></i></button>              
-                    <p>Icon 6 giờ dễ ghê ta Đập lên đổi coin Hâhha</p>
-                </div>
+                @foreach ($messages as $message)
+                    @if ($message->is_pinned && $message->is_deleted == 0)
+                        <div class="message-ghim">
+                            <button class="ghim"><i class='bx bxs-pin'></i></button>              
+                            <p>{{ $message->content }}</p>
+                        </div>
+                    @endif
+                @endforeach
                 
                 
                 
                 <div class="message-chat">
-                @if ($messages)
                     @foreach ($messages as $message)
                         
                         <div class="message {{ $message->is_current_user ? 'user' : 'friend' }}">
@@ -137,44 +150,62 @@
                             <div class="name_bubble">
                                 @if (!$message->is_current_user)
                                     <div class="name">
-                                        <span>{{ $message->username }}</span> <!-- Tên người gửi nếu không phải người dùng hiện tại -->
+                                        <span>{{ $message->username }}</span>
                                     </div>
                                 @endif
                                 <div class="bubble">
-                                    <p>{{ $message->content }}<br><span>{{ $message->created_at->format('H:i') }}</span></p> <!-- Hiển thị nội dung và giờ -->
+                                    <p>{{ $message->is_deleted == 0 ? $message->content : 'Tin nhắn đã được thu hồi'  }}<br><span>{{ $message->created_at->format('H:i') }}</span></p> <!-- Hiển thị nội dung và giờ -->
                                 </div>
                             </div>
 
-                            <div class="other">
-                                @if ($message->is_current_user)
-                                    <!-- Các hành động chỉ hiển thị cho người dùng hiện tại -->
+                            @if ($message->is_deleted == 0)
+                                <div class="other">
+                                        <!-- Các hành động chỉ hiển thị cho người dùng hiện tại -->
                                     <button class="btn_other"><i class='bx bx-dots-vertical-rounded'></i></button>
-                                    <div class="popup-menu user">
+                                    <div class="popup-menu {{$message->is_current_user ? 'user' : 'friend'}}">
                                         <ul>
-                                            <li>Gỡ</li>
-                                            <li>Chuyển tiếp</li>
-                                            <li>Ghim</li>
+                                            @foreach ($userInRooms as $userInRoom)
+                                                @if (Auth::user()->user_id == $userInRoom->user_id && $userInRoom->role_id == 2)
+                                                    <li>
+                                                        <form action="{{ route(Auth::user()->role_id == 1 ? 'admin.chat.deleteMess':'spacebox.chat.deleteMess', $message->message_id) }}" method="post">
+                                                            @csrf
+                                                            @METHOD('DELETE')
+                                                            <button type="submit">Thu hồi</button>
+
+                                                        </form>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                            <li>
+                                                <form action="#">
+                                                    <button type="submit">Chuyển tiếp</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                @if ($message->is_deleted == 0)
+                                                    @if ($message->is_pinned)
+                                                        <form action="{{ route(Auth::user()->role_id == 1 ? 'admin.chat.unpinMess':'spacebox.chat.unpinMess', $message->message_id) }}" method="POST">
+                                                            @csrf
+                                                            @METHOD('PATCH')
+                                                            <button type="submit">Bỏ ghim</button>
+                                                        </form>
+                                                    @else
+                                                        <form action="{{ route(Auth::user()->role_id == 1 ? 'admin.chat.pinMess':'spacebox.chat.pinMess', $message->message_id) }}" method="POST">
+                                                            @csrf
+                                                            @METHOD('PATCH')
+                                                            <button type="submit">Ghim</button>
+                                                        </form>
+                                                    @endif
+                                                @endif
+                                            </li>
                                         </ul>
                                     </div>
-                                @else
-                                    <!-- Các hành động cho tin nhắn của người khác -->
-                                    <button class="btn_other"><i class='bx bx-dots-vertical-rounded'></i></button>
-                                    <div class="popup-menu friend">
-                                        <ul>
-                                            <li>Gỡ</li>
-                                            <li>Chuyển tiếp</li>
-                                            <li>Ghim</li>
-                                        </ul>
-                                    </div>
-                                @endif
-                            </div>
+                                </div>
+                            @endif
                         </div>
                     @endforeach
-                @endif
-                    
-                
-
                 </div>
+               
             </div>
             <footer class="chat-footer">
                     <div class="left-icons">
@@ -193,7 +224,7 @@
                         
                         @csrf
 
-                        <input type="hidden" name="room_id" value="{{ $room_id }}">
+                        <input type="hidden" name="room_id" value="{{ $room_id ?? 0 }}">
 
                         <input name="content" type="text" class="input-box" placeholder="Aa">
                         <div class="right-icons">
@@ -202,6 +233,7 @@
                     </form>
                    
             </footer>
+            @endif
         </section>
 
         <!-- Directory bên phải -->
@@ -373,8 +405,27 @@
     </div>
 </x-my-layout>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // FORM ADD GROUP
+     document.getElementById('btn-add-group').addEventListener('click', function () {
+        const form_add = document.getElementById('form-add');
+        const chat_app = document.getElementById('chat-app');
+        chat_app.classList.toggle('hidden');
+        form_add.classList.toggle('show');
+        event.stopPropagation();
+    });
+    document.getElementById('cancel-btn').addEventListener('click', function () {
+        const form_add = document.getElementById('form-add');
+        const chat_app = document.getElementById('chat-app');
+        if (form_add.classList.contains('show')) {
+            form_add.classList.remove('show');
+        }
+        if (chat_app.classList.contains('hidden')) {
+            chat_app.classList.remove('hidden');
+        }
+
+    });
     // PLUS
     document.getElementById('btn_plus').addEventListener('click', function () {
         const record = document.getElementById('record');
@@ -507,24 +558,40 @@
     });
 
   
-    // FORM ADD GROUP
-    document.getElementById('btn-add-group').addEventListener('click', function () {
-        const form_add = document.getElementById('form-add');
-        const chat_app = document.getElementById('chat-app');
-        chat_app.classList.toggle('hidden');
-        form_add.classList.toggle('show');
-        event.stopPropagation();
-    });
-    document.getElementById('cancel-btn').addEventListener('click', function () {
-        const form_add = document.getElementById('form-add');
-        const chat_app = document.getElementById('chat-app');
-        if (form_add.classList.contains('show')) {
-            form_add.classList.remove('show');
+   
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectedRoomId = localStorage.getItem('selectedRoomId'); // Lấy room_id đã lưu trong localStorage
+
+        if (selectedRoomId) {
+            // Nếu có room_id, tìm phần tử và thay đổi background
+            const selectedRoom = document.getElementById('room_' + selectedRoomId);
+            if (selectedRoom) {
+                selectedRoom.classList.add('selected-group'); // Thêm class để thay đổi background
+            }
         }
-        if (chat_app.classList.contains('hidden')) {
-            chat_app.classList.remove('hidden');
+    });
+
+    function selectRoom(event, roomId) {
+        // Ngăn chặn hành động mặc định của thẻ <a> (không chuyển hướng ngay lập tức)
+        event.preventDefault();
+
+        // Lưu room_id vào localStorage để duy trì trạng thái khi load lại trang
+        localStorage.setItem('selectedRoomId', roomId);
+
+        // Xóa class 'selected-group' khỏi tất cả các nhóm
+        const allRooms = document.querySelectorAll('.chat-item');
+        allRooms.forEach(room => room.classList.remove('selected-group'));
+
+        // Thêm class 'selected-group' vào nhóm được chọn
+        const selectedRoom = document.getElementById('room_' + roomId);
+        if (selectedRoom) {
+            selectedRoom.classList.add('selected-group');
         }
 
-    });
-    
+        // Sau khi thay đổi background, thực hiện hành động chuyển hướng tới URL của phòng
+        setTimeout(function() {
+            window.location.href = selectedRoom.href;
+        }, 0); // Thực hiện chuyển hướng sau một khoảng thời gian nhỏ (200ms)
+    }
 </script>

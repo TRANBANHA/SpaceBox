@@ -70,7 +70,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     Route::post('/spacebox/addroom', [HomeController::class, 'addroom'])->name('chat.addroom');
     Route::post('/spacebox/sendMess', [HomeController::class, 'sendMessage'])->name('chat.sendMess');
 
+    Route::patch('/pinMess/{message_id}', [HomeController::class, 'pinnedMessage'])->name('chat.pinMess');
+    Route::patch('/unpinMess/{message_id}', [HomeController::class, 'unpinnedMessage'])->name('chat.unpinMess');
 
+    Route::delete('/deleteMess/{message_id}', [HomeController::class, 'deleteMessage'])->name('chat.deleteMess');
 });
 
 
@@ -83,6 +86,13 @@ Route::group(['prefix' => 'spacebox', 'middleware' => 'check_user' ,'as' => 'spa
 
     Route::post('/addroom', [HomeController::class, 'addroom'])->name('chat.addroom');
     Route::post('/sendMess', [HomeController::class, 'sendMessage'])->name('chat.sendMess');
+
+    Route::patch('/pinMess/{message_id}', [HomeController::class, 'pinnedMessage'])->name('chat.pinMess');
+    Route::patch('/unpinMess/{message_id}', [HomeController::class, 'unpinnedMessage'])->name('chat.unpinMess');
+    
+    Route::delete('/deleteMess/{message_id}', [HomeController::class, 'deleteMessage'])->name('chat.deleteMess');
+
+
 });
 
 

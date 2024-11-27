@@ -89,6 +89,8 @@ class AccountController extends Controller
         $request = $loginRequest->validated();
         
         $remember = $loginRequest->has('remember');
+
+        
         // Thực hiện xác thực
         if(Auth::attempt(['email' => $request['email'], 'password' => $request['password']], $remember)) {
             // Kiểm tra xem email đã được xác thực chưa

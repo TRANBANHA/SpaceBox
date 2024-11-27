@@ -415,7 +415,7 @@ nav .profile-details i{
 
 .box-functions {
   display: none;
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 .modal-addRoom, .modal-updateRoom  {
@@ -748,7 +748,7 @@ nav .profile-details i{
 
 .box-functions{
   display: none;
-  padding: 10px 5px 0px;
+  padding: 0 5px;
 }
 
 .box-functions .btn-box{

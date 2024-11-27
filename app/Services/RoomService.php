@@ -116,8 +116,12 @@ class RoomService
         $rooms = $this->getListRoomUser($user_id);
 
         // Nếu không có phòng nào, trả về null
-        if ($rooms->isEmpty()) {
-            return null;
+        // if ($rooms->isEmpty()) {
+        //     return null;
+        // }
+        if($rooms == null){
+            $rooms = new Room();
+            $rooms->room_id = 0;
         }
 
         return $rooms; // Trả về danh sách các phòng đã được sắp xếp

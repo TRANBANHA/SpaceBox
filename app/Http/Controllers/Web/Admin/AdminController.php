@@ -33,6 +33,10 @@ class AdminController extends Controller
 
     public function getFirstRoom(){
         $room = $this->roomService->getDefaultRoom(Auth::user()->user_id)->first();
+        if($room == null){
+            $room = new Room();
+            $room->room_id = 0;
+        }
         return $room;
     }
 

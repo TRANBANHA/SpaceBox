@@ -29,4 +29,23 @@ class MessageService
         return $this->message->create($mess);
     }
     
+    public function pinnedMessage($messageId)
+    {
+        Message::where('message_id', $messageId)->update(['is_pinned' => 1]);
+
+        return true;
+    }
+    public function unpinnedMessage($messageId)
+    {
+        Message::where('message_id', $messageId)->update(['is_pinned' => 0]);
+
+        return true;
+    }
+    public function deleteMessage($messageId)
+    {
+        Message::where('message_id', $messageId)->update(['is_deleted' => 1]);
+
+        return true;
+    }
+
 }

@@ -10,6 +10,7 @@ use App\Services\MessageService;
 use App\Services\RoomService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class HomeController extends Controller
 {
@@ -44,16 +45,34 @@ class HomeController extends Controller
 
     public function chat($room_id)
     {
+        if(Auth::user()->status == 0){
+            Auth::logout();
+            return redirect()->route('account.login')->with('errors', [
+                'title' => 'Đăng nhập không thành công',
+                'content' => 'Tài khoản của bạn đã bị khoá hoặc vô hiệu hoá'
+            ]);
+        }
         $user_id = Auth::id();
-        // dd($user_id);
+
         $listUsers = $this->userService->getList();
         // Lấy danh sách các phòng mà người dùng tham gia
         $rooms = $this->roomService->getDefaultRoom($user_id);
 
-        // $firstRoom = $rooms->first();
-        
-       
-        // Kiểm tra xem phòng có tồn tại không
+        if($rooms != null){
+            foreach ($rooms as $room) {
+                $messages = $this->getMessagesInRoom($room->room_id);
+                $latestMess = $messages->where('room_id', $room->room_id)->sortByDesc('created_at')->first();
+                if($latestMess){
+                    $room->latestMess = $latestMess->content;
+                    $room->latestMessTime = $latestMess->created_at;
+                }else{
+                    $room->latestMess = '...';
+                    $room->latestMessTime = $room->created_at;
+                }
+            }
+        }
+
+        // Kiểm tra xem id phòng có tồn tại không
         if ($room_id) {
             // Lấy danh sách thành viên và quyền trong phòng
             $userInRooms = $this->getUsersWithRolesInRoom($room_id);
@@ -81,7 +100,13 @@ class HomeController extends Controller
         }
 
         // Nếu không có phòng, trả về trang chat mà không có tin nhắn
-        return view('home.chat', ['rooms' => $rooms, 'messages' => []]);
+        return view('home.chat', [
+            'room_id' => 0,
+            'listUsers'=> $listUsers, 
+            'rooms' => $rooms, 
+            'userInRooms' => [], 
+            'messages' => []
+        ]);
     }
 
 
@@ -131,7 +156,38 @@ class HomeController extends Controller
         }
     }
 
+    public function pinnedMessage($messageId){
+
+        $is_pinned = $this->messageService->pinnedMessage($messageId);
+       
+        if ($is_pinned) {
+            return redirect()->back()->with('chat-success', 'Đã ghim tin nhắn');
+        }
+
+        return redirect()->back()->with('chat-error', 'Không thể ghim tin nhắn');
+    }
+    public function unpinnedMessage($messageId){
+
+        $un_pinned = $this->messageService->unpinnedMessage($messageId);
+       
+        if ($un_pinned) {
+            return redirect()->back()->with('chat-success', 'Đã bỏ ghim tin nhắn');
+        }
+
+        return redirect()->back()->with('chat-error', 'Không thể bỏ ghim tin nhắn');
+    }
     
+
+    public function deleteMessage($messageId){
+
+        $deleteMess = $this->messageService->deleteMessage($messageId);
+       
+        if ($deleteMess) {
+            return redirect()->back()->with('chat-success', 'Tin nhắn đã được thu hồi');
+        }
+
+        return redirect()->back()->with('chat-error', 'Không thể thu hồi tin nhắn đã được thu hồi');
+    }
 
 
    
