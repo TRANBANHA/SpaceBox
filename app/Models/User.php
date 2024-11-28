@@ -31,5 +31,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class);
+    }
+
     
 }

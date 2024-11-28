@@ -178,9 +178,13 @@
 }
 
 .chat-list .chat-info p {
+    width: 160px;
     margin: 5px 0 0;
     color: #666;
     font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .chat-meta {
@@ -221,16 +225,16 @@
 
 
 /* CSS FORM CHAT */
+
 .chat-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: 100vh;  /* Đảm bảo chiều cao của container là 100% chiều cao màn hình */
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-   
-    overflow-y: auto;
+    position: relative;  
 }
 
 .chat-header {
@@ -239,7 +243,10 @@
     padding: 10px 20px;
     border-bottom: 1px solid #e0e0e0;
     align-items: center;
+    background-color: #fff;
+    z-index: 1000;  
 }
+
 
 .user-info {
     display: flex;
@@ -269,7 +276,7 @@
 .call-Information a {
     color: #0f8fffeb;
     font-size: 25px;
-    margin: 0 12px;
+    margin: 0 5px;
     line-height: 1;
     width: 40px; /* Cố định độ rộng */
     text-align: center; /* Canh giữa nội dung */
@@ -303,15 +310,33 @@
   .chat-content{
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Đẩy các phần tử con ra hai đầu */
     align-items: center;
-    height: 100%;
+    /* justify-content: flex-end; */
+    /* height: 100%; */
     background-color: #f1f1f1;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+.chat-content::-webkit-scrollbar {
+    display: none;
   }
 
+  .box-mess-ghim{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+    top: 0;
+    padding: 10px 20px;
+    gap: 10px;
+    z-index: 999;
+    /* background-color: #d0d5dbeb; */
+    
+  }
   .message-ghim {
-    position: sticky;
-    margin: 10px 0;
+    /* margin: 10px 0; */
     background-color: #ff8b60;
     padding: 8px 20px;
     border-radius: 7px;
@@ -325,6 +350,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     /* width: 500px; */
     align-items: center;
+   
   }
   
   .message-ghim .ghim {
@@ -333,12 +359,19 @@
     cursor: pointer;
     font-size: 16px;
   }
+  .message-ghim p{
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 .message-chat{
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    flex-grow: 1;
 }
 
 
@@ -498,20 +531,14 @@
 
 
 
-
-
-
-
-
-
-
-
-.chat-footer {
+.chat-footer{
+    bottom: 0;
     padding: 10px;
     display: flex;
     border-top: 1px solid #e0e0e0;
-
+    background-color: #ffffff;
 }
+
 
 /* Left icons */
 .left-icons,

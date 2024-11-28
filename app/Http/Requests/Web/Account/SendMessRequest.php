@@ -22,6 +22,7 @@ class SendMessRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => ['required', 'integer'],
             'room_id' => ['required', 'integer'],
             'content' => ['required', 'string'],
         ];

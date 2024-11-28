@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Events\ChatEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\AddRoomRequest;
 use App\Http\Requests\Web\Account\SendMessRequest;
@@ -150,8 +151,27 @@ class HomeController extends Controller
         $request = $sendMessRequest->validated();
 
         $message = $this->messageService->createMessage($request);
-
+        // dd($message);
         if($message){
+            $userSendMess = User::find($message->user_id);
+            if ($userSendMess) {
+                $message->username = $userSendMess->username; 
+                $message->img_path = $userSendMess->img_path; 
+            }
+             // Chuẩn bị dữ liệu phát qua sự kiện
+            $messData = [
+                'user_id' => $message->user_id,
+                'room_id' => $message->room_id,
+                'content' => $message->content,
+                'is_deleted' => $message->is_deleted,
+                'is_pinned' => $message->is_pinned,
+                'created_at' => $message->created_at->format('H:i'),
+                'username' => $message->username,
+                'img_path' => $message->img_path,
+                'is_current_user' => $message->is_current_user,
+            ];
+
+            broadcast(new ChatEvent($messData['room_id'],$messData));
             return redirect()->back();
         }
     }

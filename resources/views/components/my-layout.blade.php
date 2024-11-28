@@ -53,6 +53,5 @@
             {{ $slot }}
         </section>
         
-        
     </body>
 </html>

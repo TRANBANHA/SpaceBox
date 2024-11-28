@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Room;
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -12,7 +14,16 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
+// Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
+// Broadcast::channel('chat.{roomId}', function (User $user, int $roomId) {
+//     // Kiểm tra xem người dùng có thuộc phòng hay không
+//     $room = Room::find($roomId); // Tìm phòng theo ID
+    
+//     if (!$room) {
+//         return false; // Nếu phòng không tồn tại, không cho phép truy cập
+//     }
+
+//     // Kiểm tra xem người dùng có thuộc phòng hay không
+//     return $room->users->contains($user->id);
+// });

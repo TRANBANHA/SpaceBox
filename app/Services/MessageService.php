@@ -20,7 +20,7 @@ class MessageService
     public function createMessage($param)
     {
         $mess = [
-            'user_id' => Auth::user()->user_id,
+            'user_id' => $param['user_id'],
             'room_id' => $param['room_id'],
             'content' => $param['content'],
             'is_current_user' => 1,

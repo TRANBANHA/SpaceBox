@@ -19,4 +19,8 @@ class Room extends Model
         'created_by',
         
     ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

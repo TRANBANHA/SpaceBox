@@ -45,7 +45,7 @@
 
                                 <div class="add-inf">
                                     <div class="img-group">
-                                        <img src="{{ url('assets/images/male.png') }}" alt="">
+                                        <img src="https://res.cloudinary.com/dy6y1gpgm/image/upload/v1732224761/icon_group_leejca.png" alt="">
                                         <button class="btn-add-imggroup"><i class='bx bxs-camera'></i></button>
                                     </div>
                                   <input class="name-group" type="text" name="room_name" placeholder="Nhập tên nhóm..." required>
@@ -53,7 +53,6 @@
                                 <div class="find">
                                     <h4>Chọn thành viên:</h4>
                                     <div class="find-name">
-                                        
                                         <input class="input-find-name" type="text" name="group_name" placeholder="Tìm kiếm">
                                         <button class="btn_find-name"><i class='bx bx-search-alt' ></i></button>
                                     </div>                                  
@@ -130,14 +129,20 @@
 
             @if ($messages)
             <div class="chat-content">
-                @foreach ($messages as $message)
-                    @if ($message->is_pinned && $message->is_deleted == 0)
-                        <div class="message-ghim">
-                            <button class="ghim"><i class='bx bxs-pin'></i></button>              
-                            <p>{{ $message->content }}</p>
-                        </div>
-                    @endif
-                @endforeach
+                <div class="box-mess-ghim">
+                    @php
+                        $pinMessNews = $messages;
+                        $pinMessNews = $messages->sortByDesc('updated_at');
+                    @endphp
+                    @foreach ($pinMessNews as $message)
+                        @if ($message->is_pinned && $message->is_deleted == 0)
+                            <div class="message-ghim">
+                                <button class="ghim"><i class='bx bxs-pin'></i></button>              
+                                <p>{{ $message->content }}</p>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
                 
                 
                 
@@ -154,7 +159,7 @@
                                     </div>
                                 @endif
                                 <div class="bubble">
-                                    <p>{{ $message->is_deleted == 0 ? $message->content : 'Tin nhắn đã được thu hồi'  }}<br><span>{{ $message->created_at->format('H:i') }}</span></p> <!-- Hiển thị nội dung và giờ -->
+                                    <p style={{ $message->is_deleted == 1 ?? "font-style: italic"  }}>{{ $message->is_deleted == 0 ? $message->content : 'Tin nhắn đã được thu hồi'  }}<br><span>{{ $message->created_at->format('H:i') }}</span></p> <!-- Hiển thị nội dung và giờ -->
                                 </div>
                             </div>
 
@@ -224,7 +229,8 @@
                         
                         @csrf
 
-                        <input type="hidden" name="room_id" value="{{ $room_id ?? 0 }}">
+                        <input id="user_id" type="hidden" name="user_id" value="{{ Auth::user()->user_id }}">
+                        <input id="room_id" type="hidden" name="room_id" value="{{ $room_id ?? 0 }}">
 
                         <input name="content" type="text" class="input-box" placeholder="Aa">
                         <div class="right-icons">
@@ -406,6 +412,18 @@
 </x-my-layout>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@vite('resources/js/app.js')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Laravel Echo:', window.Echo);
+    });
+</script>
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const messageContainer = document.querySelector('.chat-content');
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    });
+</script>
 <script>
     // FORM ADD GROUP
      document.getElementById('btn-add-group').addEventListener('click', function () {
@@ -426,6 +444,8 @@
         }
 
     });
+
+
     // PLUS
     document.getElementById('btn_plus').addEventListener('click', function () {
         const record = document.getElementById('record');
@@ -595,3 +615,5 @@
         }, 0); // Thực hiện chuyển hướng sau một khoảng thời gian nhỏ (200ms)
     }
 </script>
+
+
