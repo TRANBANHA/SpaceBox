@@ -9,6 +9,7 @@
         <aside class="sidebar">
             <div class="menu">
                 <div class="my_avt">
+                    <i id="userCurrent" style="display: none;">{{ Auth::user()->user_id }}</i>
                     <img src="{{ Auth::user()->img_path }}" alt="">
                 </div>
                 <nav class="nav_menu">
@@ -78,14 +79,14 @@
                 
             </header>
             <div class="chat-list">
-                <ul>
+                <ul id="room-list">
                     @if ($rooms)
+
                         @foreach ($rooms as $room_i)
                             <a href="{{ route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room_i->room_id) }}" 
-                                class="chat-item" 
-                                id="room_{{ $room_i->room_id }}" 
-                                data-room-id="{{ $room_i->room_id }}" 
-                                onclick="selectRoom(event, {{ $room_i->room_id }})">
+                                id="room-{{ $room_i->room_id }}" 
+                                class="chat-item {{ $room_i->room_id == $room_id ? 'selected-group' : '' }}" 
+                                data-url="{{ route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room_i->room_id) }}">
                            
                                 
                                 <img src="{{ $room_i->avt_path }}" alt="Logo" class="avatar">
@@ -110,6 +111,7 @@
         <section class="chat-container">
             <header class="chat-header">
                 <div class="user-info">
+                    
                     <img src="{{ Auth::user()->img_path }}" alt="User Avatar" class="user-avatar">
                     <div>
                         <span class="username">{{ Auth::user()->username }}</span>
@@ -411,13 +413,15 @@
     </div>
 </x-my-layout>
 
+<!-- Event Realtime -->
+@vite('resources/js/addroom.js')
+
+@vite('resources/js/chat.js')
+@vite('resources/js/room.js')
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-@vite('resources/js/app.js')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Laravel Echo:', window.Echo);
-    });
-</script>
 <script>
     window.addEventListener('DOMContentLoaded', (event) => {
         const messageContainer = document.querySelector('.chat-content');
@@ -592,28 +596,6 @@
         }
     });
 
-    function selectRoom(event, roomId) {
-        // Ngăn chặn hành động mặc định của thẻ <a> (không chuyển hướng ngay lập tức)
-        event.preventDefault();
-
-        // Lưu room_id vào localStorage để duy trì trạng thái khi load lại trang
-        localStorage.setItem('selectedRoomId', roomId);
-
-        // Xóa class 'selected-group' khỏi tất cả các nhóm
-        const allRooms = document.querySelectorAll('.chat-item');
-        allRooms.forEach(room => room.classList.remove('selected-group'));
-
-        // Thêm class 'selected-group' vào nhóm được chọn
-        const selectedRoom = document.getElementById('room_' + roomId);
-        if (selectedRoom) {
-            selectedRoom.classList.add('selected-group');
-        }
-
-        // Sau khi thay đổi background, thực hiện hành động chuyển hướng tới URL của phòng
-        setTimeout(function() {
-            window.location.href = selectedRoom.href;
-        }, 0); // Thực hiện chuyển hướng sau một khoảng thời gian nhỏ (200ms)
-    }
 </script>
 
 

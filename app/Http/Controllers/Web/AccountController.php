@@ -120,6 +120,7 @@ class AccountController extends Controller
                 default: // Các quyền khác
                    
 
+                    // return redirect()->route('spacebox.home.chat', $room->room_id);
                     if($room){
                         return redirect()->route('spacebox.home.chat', $room->room_id);
                     } else {

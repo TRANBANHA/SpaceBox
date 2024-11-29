@@ -19,4 +19,10 @@ class Message extends Model
         'file_path',
         'is_pinned',
     ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

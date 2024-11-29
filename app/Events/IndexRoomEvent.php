@@ -10,16 +10,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessEvent
+class IndexRoomEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    // public $room_id;
+    // public $user_id;
+    public $room;
+    public function __construct($room)
     {
-        //
+        // $this->room_id = $room_id;
+        $this->room = $room;
     }
 
     /**
@@ -27,10 +31,14 @@ class MessEvent
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn(): Channel
     {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        return new Channel('room');
+        // return new Channel('room.' . $this->room_id);
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'index-room';
     }
 }

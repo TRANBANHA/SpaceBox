@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Events\AddUserRoom;
 use App\Events\ChatEvent;
+use App\Events\IndexRoomEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\AddRoomRequest;
 use App\Http\Requests\Web\Account\SendMessRequest;
+use App\Models\Room;
 use App\Models\User;
 use App\Services\MessageService;
 use App\Services\RoomService;
@@ -70,6 +73,7 @@ class HomeController extends Controller
                     $room->latestMess = '...';
                     $room->latestMessTime = $room->created_at;
                 }
+                
             }
         }
 
@@ -90,7 +94,6 @@ class HomeController extends Controller
                     $message->img_path = $userSendMess->img_path; 
                 }
             }
-
             return view('home.chat', [
                 'room_id' => $room_id,
                 'listUsers'=> $listUsers, 
@@ -136,6 +139,15 @@ class HomeController extends Controller
         $room = $this->roomService->addRoom($request);
 
         if($room){
+            $roomData = [
+                'room_id' => $room->room_id,
+                'room_name' => $room->room_name,
+                'latestMess' => '...',
+                'latestMessTime' => $room->created_at->format('H:i'),
+                'avt_path' => $room->avt_path,
+            ];
+            broadcast(new AddUserRoom($roomData));
+            
             return redirect()->route(Auth::user()->role_id==1 ? 'admin.home.chat' : 'spacebox.home.chat', $room->room_id)->with('chat-success', 'Thêm phòng chat thành công');
         }
 
@@ -144,11 +156,11 @@ class HomeController extends Controller
     }
 
 
-   
-
 
     public function sendMessage(SendMessRequest $sendMessRequest){
         $request = $sendMessRequest->validated();
+
+
 
         $message = $this->messageService->createMessage($request);
         // dd($message);
@@ -158,6 +170,24 @@ class HomeController extends Controller
                 $message->username = $userSendMess->username; 
                 $message->img_path = $userSendMess->img_path; 
             }
+
+            // $rooms = $this->roomService->getDefaultRoom($message->user_id);
+            $room = Room::where('room_id', $message->room_id)->first();
+            // $userInRooms = $this->getUsersWithRolesInRoom($room_id);
+            // dd($room);
+            if($room != null){
+                $roomData = [
+                    'room_id' => $room->room_id,
+                    'room_name' => $room->room_name,
+                    'latestMess' => $message->content,
+                    'latestMessTime' => $message->created_at->format('H:i'),
+                    'avt_path' => $room->avt_path,
+                    
+                ];
+            }
+            // dd($roomData);
+           
+            
              // Chuẩn bị dữ liệu phát qua sự kiện
             $messData = [
                 'user_id' => $message->user_id,
@@ -171,7 +201,15 @@ class HomeController extends Controller
                 'is_current_user' => $message->is_current_user,
             ];
 
-            broadcast(new ChatEvent($messData['room_id'],$messData));
+
+            
+            broadcast(new ChatEvent($messData['room_id'],$messData))->toOthers();
+           
+            broadcast(new IndexRoomEvent($roomData));
+
+            // broadcast(new IndexRoomEvent($messData['room_id'],$messData));
+
+
             return redirect()->back();
         }
     }
