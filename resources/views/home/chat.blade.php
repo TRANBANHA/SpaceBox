@@ -9,7 +9,8 @@
         <aside class="sidebar">
             <div class="menu">
                 <div class="my_avt">
-                    <i id="userCurrent" style="display: none;">{{ Auth::user()->user_id }}</i>
+                    <input type="hidden" id="roleCurrent" value="{{ Auth::user()->role_id }}">
+                    <input type="hidden" id="userCurrent" value="{{ Auth::user()->user_id }}">
                     <img src="{{ Auth::user()->img_path }}" alt="">
                 </div>
                 <nav class="nav_menu">
@@ -85,8 +86,7 @@
                         @foreach ($rooms as $room_i)
                             <a href="{{ route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room_i->room_id) }}" 
                                 id="room-{{ $room_i->room_id }}" 
-                                class="chat-item {{ $room_i->room_id == $room_id ? 'selected-group' : '' }}" 
-                                data-url="{{ route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room_i->room_id) }}">
+                                class="chat-item {{ $room_i->room_id == $room_id ? 'selected-group' : '' }}" >
                            
                                 
                                 <img src="{{ $room_i->avt_path }}" alt="Logo" class="avatar">
@@ -161,7 +161,33 @@
                                     </div>
                                 @endif
                                 <div class="bubble">
-                                    <p style={{ $message->is_deleted == 1 ?? "font-style: italic"  }}>{{ $message->is_deleted == 0 ? $message->content : 'Tin nhắn đã được thu hồi'  }}<br><span>{{ $message->created_at->format('H:i') }}</span></p> <!-- Hiển thị nội dung và giờ -->
+                                    @if(!$message->file_path)
+                                        <p style="{{ $message->is_deleted ? 'font-style: italic;' : '' }}" >
+                                            {{ $message->content }}
+                                            <br>
+                                            <span>{{ $message->created_at->format('H:i') }}</span>
+                                        </p>
+                                    @else
+                                        @if(preg_match('/\.(jpg|jpeg|png|gif)$/i', $message->file_path))
+                                            <!-- Nếu là ảnh, sử dụng thẻ <img> để hiển thị -->
+                                            <a href="{{ $message->file_path }}" target="_blank">
+                                                <img src="{{ $message->file_path }}" alt="Image" style="width: auto; max-height: 250px;" />
+                                            </a>
+                                        @elseif(preg_match('/\.(pdf)$/i', $message->file_path))
+                                            <!-- Nếu là ảnh, sử dụng thẻ <img> để hiển thị -->
+                                            <a href="{{ $message->file_path }}" target="_blank">
+                                                {{ $message->content }}
+                                            </a>
+                                        @else
+                                            <!-- Các loại file khác, có thể chỉ hiển thị link tải về -->
+                                            <a href="{{ $message->file_path }}" download="{{ $message->content }}">
+                                                {{ $message->content }}
+                                            </a>
+                                        @endif
+                                        <!-- <a href="{{ $message->file_path }}" target="_blank">Truy cập</a> -->
+                                        <br>
+                                        <span>{{ $message->created_at->format('H:i') }}</span>
+                                    @endif
                                 </div>
                             </div>
 
@@ -221,12 +247,21 @@
                             <i class='bx bxs-microphone'></i>
                             <p>gửi tệp ghi âm</p>
                         </div>
-                        <input type="file" id="fileInput" style="display: none;" />
+                        
+                    </div>  
+                    <form id="fileForm" action="{{ Auth::user()->role_id == 1 ? route('admin.chat.sendFile') : route('spacebox.chat.sendFile') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <input  type="hidden" name="user_id" value="{{ Auth::user()->user_id }}">
+                        <input  type="hidden" name="room_id" value="{{ $room_id ?? 0 }}">
+                        <input type="file" name="file_mess" id="fileInput" style="display: none;" onchange="handleFileChange(event)"/>
                         <!-- Button -->
-                        <button class="icon-btn" onclick="document.getElementById('fileInput').click()">
+                        <button class="icon-btn" type="button" onclick="document.getElementById('fileInput').click()">
                             <i class='bx bxs-file-image'></i>
                         </button>
-                    </div>
+                    </form>
+
+                   
                     <form class="formSendMess" action="{{ Auth::user()->role_id == 1 ? route('admin.chat.sendMess') : route('spacebox.chat.sendMess') }}" method="POST">
                         
                         @csrf
@@ -468,15 +503,27 @@
         alert('record đã được chọn!');
     });
 
-
-    // ADD FILE
-    document.getElementById('fileInput').addEventListener('change', function () {
-        const file = this.files[0];
+    
+    function handleFileChange(event) {
+        const file = event.target.files[0]; // Lấy file đầu tiên
         if (file) {
             console.log('File được chọn:', file.name);
-            // Thực hiện các hành động khác, ví dụ upload file
+            
+            // Sau khi chọn file, tự động submit form
+            document.getElementById('fileForm').submit();
+        } else {
+            console.log('Chưa chọn file');
         }
-    });
+    }
+    // document.getElementById('fileInput').addEventListener('change', function () {
+    //     const file = this.files[0];
+    //     if (file) {
+    //         console.log('File được chọn:', file.name);
+    //         // Thực hiện các hành động khác, ví dụ upload file
+    //     }
+    // });
+
+    
 
     
     document.getElementById('toggleDirectory').addEventListener('click', function (event) {
@@ -595,7 +642,8 @@
             }
         }
     });
-
+    
 </script>
+
 
 

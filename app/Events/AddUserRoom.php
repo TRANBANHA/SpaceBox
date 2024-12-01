@@ -18,10 +18,10 @@ class AddUserRoom implements ShouldBroadcast
      * Create a new event instance.
      */
     public $room;
+    
     public function __construct($room)
     {
         $this->room = $room;
-        // $this->users = $users;
     }
 
     /**

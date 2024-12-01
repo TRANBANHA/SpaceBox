@@ -35,19 +35,15 @@ class RoomService
             'room_name' => $param['room_name'],
             'created_by' => Auth::user()->user_id,
         ];
-        // dd($param['members']);
 
         $newRoom = $this->room->create($room);
 
-        // $newRoom->userId = $param['members'];
-        // dd($newRoom);
         if (isset($param['members']) && count($param['members']) > 0) {
             
             $newRoom->userId = $param['members'];
 
             $this->addRoomRoleByUser($newRoom);
         }else{
-            // $newRoom->userId = $newRoom->created_by;
             $this->addRoomRoleByUser($newRoom);
         }
         return $newRoom;
@@ -130,9 +126,7 @@ class RoomService
     public function getUsersInRoom($roomId)
     {
         // Lấy user dựa trên room_id
-        $idUserInRoom = $this->roomRole->where('room_id', $roomId)->pluck('user_id');
-
-
+        $idUserInRoom = $this->roomRole->where('room_id', $roomId)->select('user_id', 'role_id')->get();
 
         return $idUserInRoom;
     }

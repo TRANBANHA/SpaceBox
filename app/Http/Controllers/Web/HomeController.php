@@ -7,12 +7,14 @@ use App\Events\ChatEvent;
 use App\Events\IndexRoomEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\AddRoomRequest;
+use App\Http\Requests\Web\Account\SendFileRequest;
 use App\Http\Requests\Web\Account\SendMessRequest;
 use App\Models\Room;
 use App\Models\User;
 use App\Services\MessageService;
 use App\Services\RoomService;
 use App\Services\UserService;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
@@ -138,14 +140,20 @@ class HomeController extends Controller
 
         $room = $this->roomService->addRoom($request);
 
-        if($room){
+        $roomAdd = Room::where('room_id', $room->room_id)->first();
+
+        if($roomAdd){
+            $userInRoom = $this->roomService->getUsersInRoom($roomAdd->room_id)->toArray();
+            
             $roomData = [
-                'room_id' => $room->room_id,
-                'room_name' => $room->room_name,
+                'room_id' => $roomAdd->room_id,
+                'room_name' => $roomAdd->room_name,
                 'latestMess' => '...',
-                'latestMessTime' => $room->created_at->format('H:i'),
-                'avt_path' => $room->avt_path,
+                'latestMessTime' => $roomAdd->created_at->format('H:i'),
+                'avt_path' => $roomAdd->avt_path,
+                'userInRoom' => $userInRoom
             ];
+
             broadcast(new AddUserRoom($roomData));
             
             return redirect()->route(Auth::user()->role_id==1 ? 'admin.home.chat' : 'spacebox.home.chat', $room->room_id)->with('chat-success', 'Thêm phòng chat thành công');
@@ -155,62 +163,115 @@ class HomeController extends Controller
 
     }
 
+    public function eventSendMess($message){
+        $userSendMess = User::find($message->user_id);
+        if ($userSendMess) {
+            $message->username = $userSendMess->username; 
+            $message->img_path = $userSendMess->img_path; 
+        }
+
+        $room = Room::where('room_id', $message->room_id)->first();
+        if($room != null){
+            $userInRoom = $this->roomService->getUsersInRoom($room->room_id)->toArray();
+        
+            $roomData = [
+                'room_id' => $room->room_id,
+                'room_name' => $room->room_name,
+                'latestMess' => $message->content,
+                'latestMessTime' => $message->created_at->format('H:i'),
+                'avt_path' => $room->avt_path,
+                'userInRoom' => $userInRoom
+                
+            ];
+        }
+        // dd($roomData);
+       
+        
+         // Chuẩn bị dữ liệu phát qua sự kiện
+        $messData = [
+            'message_id' => $message->message_id,
+            'user_id' => $message->user_id,
+            'room_id' => $message->room_id,
+            'content' => $message->content,
+            'is_deleted' => $message->is_deleted,
+            'is_pinned' => $message->is_pinned,
+            'created_at' => $message->created_at->format('H:i'),
+            'file_path' => $message->file_path,
+            'username' => $message->username,
+            'img_path' => $message->img_path,
+            'is_current_user' => $message->is_current_user,
+            'userInRooms' => $userInRoom
+        ];
+
+        // dd($messData);
+
+
+        
+        broadcast(new ChatEvent($messData['room_id'],$messData));
+       
+        broadcast(new IndexRoomEvent($roomData));
+
+        return true;
+    }
+
+    public function sendFile(SendFileRequest $sendFileRequest)
+    {
+        $request = $sendFileRequest->validated();
+
+        if($sendFileRequest->hasFile('file_mess')){
+
+            $file = $sendFileRequest->file('file_mess');
+
+            $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); 
+            $originalExtension = $file->getClientOriginalExtension(); 
+            $newFileName = $originalFileName . '.' . $originalExtension; 
+
+            $renamedFilePath = $file->move(
+                sys_get_temp_dir(), 
+                $newFileName     
+            );
+            
+    
+                // Xử lý upload raw files cho các loại file như .xls, .doc, .pdf
+            $uploadedFile = Cloudinary::upload($renamedFilePath->getRealPath(), [
+                'resource_type' => 'auto',
+                'public_id' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                'use_filename' => true, // Sử dụng tên file gốc
+                'unique_filename' => false, 
+            ])->getSecurePath();
+
+            if ($uploadedFile) {
+                $request['content'] = $file->getClientOriginalName();
+                $request['file_mess'] = $uploadedFile;
+            } else {
+                return redirect()->back()->with('error', 'Tải file không thành công');
+            }
+        }
+        $message = $this->messageService->createFileMessage($request);
+
+
+        if($message){
+            $event = $this->eventSendMess($message);
+            if($event){
+                return redirect()->back();
+            }
+        }
+        return redirect()->back()->with('error', 'Gửi file không thành công');
+        // dd($message);
+    }
+    
 
 
     public function sendMessage(SendMessRequest $sendMessRequest){
         $request = $sendMessRequest->validated();
 
-
-
         $message = $this->messageService->createMessage($request);
         // dd($message);
         if($message){
-            $userSendMess = User::find($message->user_id);
-            if ($userSendMess) {
-                $message->username = $userSendMess->username; 
-                $message->img_path = $userSendMess->img_path; 
+            $event = $this->eventSendMess($message);
+            if($event){
+                return redirect()->back();
             }
-
-            // $rooms = $this->roomService->getDefaultRoom($message->user_id);
-            $room = Room::where('room_id', $message->room_id)->first();
-            // $userInRooms = $this->getUsersWithRolesInRoom($room_id);
-            // dd($room);
-            if($room != null){
-                $roomData = [
-                    'room_id' => $room->room_id,
-                    'room_name' => $room->room_name,
-                    'latestMess' => $message->content,
-                    'latestMessTime' => $message->created_at->format('H:i'),
-                    'avt_path' => $room->avt_path,
-                    
-                ];
-            }
-            // dd($roomData);
-           
-            
-             // Chuẩn bị dữ liệu phát qua sự kiện
-            $messData = [
-                'user_id' => $message->user_id,
-                'room_id' => $message->room_id,
-                'content' => $message->content,
-                'is_deleted' => $message->is_deleted,
-                'is_pinned' => $message->is_pinned,
-                'created_at' => $message->created_at->format('H:i'),
-                'username' => $message->username,
-                'img_path' => $message->img_path,
-                'is_current_user' => $message->is_current_user,
-            ];
-
-
-            
-            broadcast(new ChatEvent($messData['room_id'],$messData))->toOthers();
-           
-            broadcast(new IndexRoomEvent($roomData));
-
-            // broadcast(new IndexRoomEvent($messData['room_id'],$messData));
-
-
-            return redirect()->back();
         }
     }
 

@@ -66,8 +66,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     // Đăng nhập vào spacebox
     Route::get('/spacebox/r{room_id}', [HomeController::class, 'chat'])->name('home.chat');
     
-    // Route::get('/messages/{room_id}', [HomeController::class, 'getMessagesInRoom'])->name('chat.messages');
     Route::post('/spacebox/addroom', [HomeController::class, 'addroom'])->name('chat.addroom');
+    
+
+    Route::post('/sendFile', [HomeController::class, 'sendFile'])->name('chat.sendFile');
     Route::post('/spacebox/sendMess', [HomeController::class, 'sendMessage'])->name('chat.sendMess');
 
     Route::patch('/pinMess/{message_id}', [HomeController::class, 'pinnedMessage'])->name('chat.pinMess');
@@ -85,6 +87,8 @@ Route::group(['prefix' => 'spacebox', 'middleware' => 'check_user' ,'as' => 'spa
     // Route::get('/messages/{room_id}', [HomeController::class, 'getMessagesInRoom'])->name('chat.messages');
 
     Route::post('/addroom', [HomeController::class, 'addroom'])->name('chat.addroom');
+
+    Route::post('/sendFile', [HomeController::class, 'sendFile'])->name('chat.sendFile');
     Route::post('/sendMess', [HomeController::class, 'sendMessage'])->name('chat.sendMess');
 
     Route::patch('/pinMess/{message_id}', [HomeController::class, 'pinnedMessage'])->name('chat.pinMess');
