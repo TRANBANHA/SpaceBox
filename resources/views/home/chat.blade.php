@@ -93,7 +93,7 @@
                                 <div class="chat-info">
                                     <h4>{{ $room_i->room_name }}</h4>
                                     <!-- Hiển thị tin nhắn mới nhất và thời gian -->
-                                        <p style="font-weight: bold;">{{ $room_i->latestMess }}</p>
+                                    <p style="font-weight: bold;">{{ $room_i->latestMess }}</p>
                                 </div>
                                 <div class="chat-meta">
                                     <span class="time">{{ $room_i->latestMessTime->format('H:i') }}</span>
@@ -175,17 +175,20 @@
                                             </a>
                                         @elseif(preg_match('/\.(pdf)$/i', $message->file_path))
                                             <!-- Nếu là ảnh, sử dụng thẻ <img> để hiển thị -->
-                                            <a href="{{ $message->file_path }}" target="_blank">
-                                                {{ $message->content }}
+                                            
+                                            <a href="{{ $message->file_path }}" target="_blank" class="file-mess-link">
+                                                <i class='bx bx-file'></i>
+                                                <p>{{ $message->content }}</p>
                                             </a>
                                         @else
                                             <!-- Các loại file khác, có thể chỉ hiển thị link tải về -->
-                                            <a href="{{ $message->file_path }}" download="{{ $message->content }}">
-                                                {{ $message->content }}
+                                            <a href="{{ $message->file_path }}" download="{{ $message->content }}" class="file-mess-link">
+                                                <i class='bx bx-file'></i>
+                                                <p>{{ $message->content }}</p>
                                             </a>
                                         @endif
                                         <!-- <a href="{{ $message->file_path }}" target="_blank">Truy cập</a> -->
-                                        <br>
+                                        
                                         <span>{{ $message->created_at->format('H:i') }}</span>
                                     @endif
                                 </div>

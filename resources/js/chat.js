@@ -38,16 +38,18 @@ if (roomId) {
                                 </a>
                             ` : /\.(pdf)$/i.test(e.message.file_path) ? `
                                 <!-- Nếu là file PDF, sử dụng thẻ <a> để hiển thị -->
-                                <a href="${e.message.file_path}" target="_blank">
-                                    ${e.message.content}
+                                <a href="${e.message.file_path}" target="_blank" class="file-mess-link">
+                                    <i class='bx bx-file'></i>
+                                    <p>${e.message.content}</p>
                                 </a>
                             ` : `
                                 <!-- Các loại file khác, có thể chỉ hiển thị link tải về -->
-                                <a href="${e.message.file_path}" download="${e.message.content}">
-                                    ${e.message.content}
+                                <a href="${e.message.file_path}" download="${e.message.content}" class="file-mess-link">
+                                    <i class='bx bx-file'></i>
+                                    <p>${e.message.content}</p>
+                                    
                                 </a>
                             `}
-                            <br>
                             <span>${e.message.created_at}</span>
                         `
                         }

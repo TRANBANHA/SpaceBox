@@ -24,7 +24,7 @@ class SendFileRequest extends FormRequest
         return [
             'user_id' => ['required', 'integer'],
             'room_id' => ['required', 'integer'],
-            'file_mess' =>  'required|file|mimes:xls,xlsx,doc,docx,pdf,jpg,jpeg,png|max:5120',
+            'file_mess' =>  'required|file|mimes:xls,xlsx,doc,docx,pdf,jpg,jpeg,png|max:20480',
         ];
     }
 }

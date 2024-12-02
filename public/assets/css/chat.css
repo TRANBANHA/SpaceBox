@@ -440,6 +440,26 @@
     border-color: transparent #ffffff transparent transparent;
 }
 
+.file-mess-link{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    color: #6841ea;
+    text-decoration: none;
+}
+
+.file-mess-link i{
+    background: #fff;
+    color: #919eab;
+    border-radius: 4px;
+}
+
+.file-mess-link p{
+    text-decoration: underline;
+}
+
+
 .other{
     display: flex;
     flex-direction: row;
@@ -600,11 +620,12 @@
 }
 
 .icon-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  margin: 0 5px;
-  cursor: pointer;
+    height: 100%;
+    background: none;
+    border: none;
+    font-size: 20px;
+    margin: auto 5px;
+    cursor: pointer;
 }
 
 .icon-btn:hover {

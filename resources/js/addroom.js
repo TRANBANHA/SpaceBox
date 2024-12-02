@@ -11,7 +11,7 @@ window.Echo.channel('addroom').listen('.add', (event) => {
     const userRooms = event.room.userInRoom;
 
    
-    if (userRooms.includes(Number(IdUserCurrent))) {
+    if (userRooms.some(userRoom => userRoom.user_id === Number(IdUserCurrent))) {
         const roomBox = document.getElementById('room-list');
         const roomHTML = `
             <a href="/spacebox/r${roomId}" id="room-${roomId}" class="chat-item">

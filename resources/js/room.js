@@ -1,6 +1,7 @@
 import './bootstrap';
 
 window.Echo.channel(`room`).listen('.index-room', (event) => {
+    console.log(event);
 
     const roomBox = document.getElementById('room-list');
 
@@ -12,22 +13,22 @@ window.Echo.channel(`room`).listen('.index-room', (event) => {
 
     var idRoomCurrent;
     const userRooms = event.room.userInRoom;
-
+    console.log(userRooms);
     if (roomCurrent) {
         idRoomCurrent = roomCurrent.value;
     }
     else {
         idRoomCurrent = 0;
     }
-    if(userRooms.includes(Number(userCurrent))) {
-    roomList.forEach((roomI) => {
+    if (userRooms.some(userRoom => userRoom.user_id === Number(userCurrent))) {
+        roomList.forEach((roomI) => {
         // Kiểm tra nếu room nào có `id` trùng với `room-${roomId}`
-        if (roomI.id === `room-${roomId}`) {
-            // Cập nhật tin nhắn mới nhất và thời gian
-            roomI.querySelector('.chat-info p').textContent = event.room.latestMess;
-            roomI.querySelector('.chat-meta .time').textContent = event.room.latestMessTime;
-        }
-    });
+            if (roomI.id === `room-${roomId}`) {
+                // Cập nhật tin nhắn mới nhất và thời gian
+                roomI.querySelector('.chat-info p').textContent = event.room.latestMess;
+                roomI.querySelector('.chat-meta .time').textContent = event.room.latestMessTime;
+            }
+        });
     
         let roomItem = document.getElementById(`room-${roomId}`);
         
@@ -46,7 +47,7 @@ window.Echo.channel(`room`).listen('.index-room', (event) => {
         `;
 
         
-
+        console.log(roomItem);
         if (roomItem) {
             // Nếu phòng đã tồn tại, cập nhật danh sách phòng
             roomBox.removeChild(roomItem); // Xóa phòng hiện tại
