@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\Account\ChangePasswordRequest;
 use App\Http\Requests\Web\Account\ForgotPassRequest;
 use App\Http\Requests\Web\Account\LoginRequest;
 use App\Http\Requests\Web\Account\RegisterRequest;
@@ -116,6 +117,7 @@ class AccountController extends Controller
             // Phân quyền dựa trên role_id
             switch (Auth::user()->role_id) {
                 case 1: // Admin
+                    
                     return redirect()->route('admin.index');
                 default: // Các quyền khác
                    
@@ -142,10 +144,6 @@ class AccountController extends Controller
         return redirect()->route('account.login')->with('message','Đăng xuất thành công.');
     }
 
-
-    public function forgotPassForm(){
-        return view('auth.forgot-pass');
-    }
 
     
     
@@ -176,10 +174,29 @@ class AccountController extends Controller
             }
         }
         $user->save();
-        return redirect()->back()->with('success', 'Cập nhật thông tin thành công');
+        return redirect()->back()->with('update-success', 'Cập nhật thông tin thành công');
 
     }
 
+    public function updatePass(ChangePasswordRequest $changePasswordRequest) {
+        $request = $changePasswordRequest->validated();
+        $user = auth()->user();
+
+        try {
+            $user->password = Hash::make($request['password']);
+            $user->save();
+    
+            return redirect()->back()->with('success', 'Đổi mật khẩu thành công.');
+        } catch (\Exception $e) {
+            return redirect()->back();
+            // return redirect()->back()->withErrors(['update_password_error' => 'Có lỗi xảy ra khi đổi mật khẩu. Vui lòng thử lại.']);
+        }
+    }
+
+
+    public function forgotPassForm(){
+        return view('auth.forgot-pass');
+    }
 
     // Gửi email reset password
     public function sendEmailResetPass(ForgotPassRequest $forgotPassRequest){

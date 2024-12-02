@@ -34,7 +34,8 @@
 }
 .sidebar .my_avt img{
     height: 100%;
-    width: auto;
+    width: 100%;
+    object-fit: cover;
     border-radius: 50%;
 }
 
@@ -261,6 +262,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .username {
@@ -724,7 +726,9 @@
 
 .profile-section img {
     width: 100px;
-    height: auto;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 .profile-section .img {
     width: 100px;
@@ -785,13 +789,14 @@
     justify-content: center; 
     background: #f5f5f5;
     height: 70px;
-    width: 70px;
+    /* width: 70px; */
     border-radius: 20px;
     border: none;
     cursor: pointer;
     font-size: 14px;
     transition: background 0.3s;
     text-align: center;
+    padding: 0 10px;
 }
 
 .action-btn:hover {
@@ -948,9 +953,13 @@
 }
 
 .member-info p {
+    width: 170px;
     margin: 0;
     font-size: 12px;
     color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -1247,4 +1256,501 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+
+
+
+
+
+  /* Cấu trúc chung cho phần setting */
+.setting {
+    position: relative; /* Để đặt các phần tử con (như .option-setting) relative so với .setting */
+  }
+  
+  /* Cấu hình cho menu option-setting */
+  .option-setting {
+    position: absolute; 
+    top: -7px; 
+    left: 42px; 
+    display: none; 
+    background-color: rgb(239, 239, 239);
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    width: 180px;
+    padding: 10px 0; 
+    border: 1px solid #ddd;
+  }
+  .option-setting::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 8px 0;
+    border-color: transparent #b2b2b2 transparent transparent;
+  }
+  .option-setting ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .option-setting button {
+    width: 100%; 
+    background: none; 
+    border: none;
+    padding: 10px 20px; 
+    text-align: left; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+  }
+  
+  .option-setting button:hover {
+    background-color: #d1d0d0; 
+  }
+  
+  .option-setting.show {
+    display: block; 
+  }
+  /* Cấu trúc chung cho phần setting */
+  .setting {
+    position: relative; /* Để đặt các phần tử con (như .option-setting) relative so với .setting */
+  }
+  
+  /* Cấu hình cho menu option-setting */
+  .option-setting {
+    position: absolute; 
+    top: -7px; 
+    left: 42px; 
+    display: none; 
+    background-color: rgb(239, 239, 239);
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    width: 180px;
+    padding: 10px 0; 
+    border: 1px solid #ddd;
+  }
+  .option-setting::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 8px 0;
+    border-color: transparent #b2b2b2 transparent transparent;
+  }
+  .option-setting ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .option-setting button {
+    width: 100%; 
+    background: none; 
+    border: none;
+    padding: 10px 20px; 
+    text-align: left; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+  }
+  
+  .option-setting button:hover {
+    background-color: #d1d0d0; 
+  }
+  
+  .option-setting.show {
+    display: block; 
+  }
+  /* FORM SETTING */
+  
+    .form-setting-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      z-index: 9999;
+      display: none;
+    }
+    .form-setting-container.show{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .chat-app.hidden::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(1px); 
+      z-index: 9998;
+    }
+    .form-setting-container form{
+      width: 100%;
+    } 
+  
+    .form-setting-container .setting-avt-name{
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 5px;
+    }
+    .img-avt{
+      object-fit: cover; 
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 90px;
+      width: 90px;
+      margin-bottom: 20px;
+  
+    }
+    .img-avt img{
+      height: 100%;
+      width: auto;
+    }
+    .btn-add-avt{
+      position: absolute;
+      background-color: white;
+      border-radius:50%;
+      height: 27px;
+      width: 27px;
+      top:70px;
+      right: 140px;
+      background-color: #d8d8d8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn-add-avt i{
+      font-size: 20px;
+    }  
+    .form-setting-container .cancel-btn,
+    .form-setting-container .update-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .form-setting-container .cancel-btn {
+      background-color: #ff0000;
+      color: white;
+    }
+    .form-setting-container .update-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .setting .buttons{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap:5px;
+  
+    }
+  
+    .setting-inf{
+      display: flex;
+      flex-direction: column;
+    }
+    .setting-avt-name .name-user{
+      text-align:center;
+      border: none;
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+    }
+    .setting-avt-name .name-user:focus {
+      border: none; 
+      outline: none; 
+    }
+  
+    .setting-gender{
+      display: flex;
+      flex-direction: row;  
+      align-items: center;
+      text-align: center;
+      gap: 15px;
+  
+  }
+  
+  .setting-gender .box-gd{
+    gap:5px;
+    align-items: center;
+  }
+  
+  .setting-inf{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .setting-inf .inp_text{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+  }
+  
+  .setting-inf .email input{
+    border: 2px solid black;
+    border-radius: 10px;
+    height: 35px;
+    padding: 5px;
+    font-size: 15px;
+    color: #000;
+    pointer-events: none;
+  }
+  
+  .setting-inf .note textarea{
+    border: 2px solid black;
+    border-radius: 10px;
+  padding: 5px;
+    font-size: 15px;
+  }
+  
+  
+  .setting-inf .note{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  
+  
+  
+  
+  
+  .setting-pass{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .setting-pass .inp_text{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+  }
+  .setting-pass input{
+    border: 2px solid rgb(154, 153, 153);
+    border-radius: 10px;
+    height: 35px;
+    padding: 5px;
+    font-size: 15px;
+    color: #000;
+  }
+  
+  
+  
+  /* Cấu trúc chung cho phần setting */
+  .setting {
+    position: relative; /* Để đặt các phần tử con (như .option-setting) relative so với .setting */
+  }
+  
+  /* Cấu hình cho menu option-setting */
+  .option-setting {
+    position: absolute; 
+    top: -7px; 
+    left: 42px; 
+    display: none; 
+    background-color: rgb(239, 239, 239);
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    width: 180px;
+    padding: 10px 0; 
+    border: 1px solid #ddd;
+  }
+  .option-setting::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 8px 0;
+    border-color: transparent #b2b2b2 transparent transparent;
+  }
+  .option-setting ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .option-setting button {
+    width: 100%; 
+    background: none; 
+    border: none;
+    padding: 10px 20px; 
+    text-align: left; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+  }
+  
+  .option-setting button:hover {
+    background-color: #d1d0d0; 
+  }
+  
+  .option-setting.show {
+    display: block; 
+  }
+  .cancel-btn {
+    background-color: #ff0000 !important;
+    color: white;
+
+    font-weight: bold;
+  }
+  .create-btn{
+    background-color: #0062ff !important;
+    color: white;
+
+    font-weight: bold;
+  }
+
+  .profile_room {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .setting_room .form-setting_room-container{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgb(255, 255, 255);
+    z-index: 9999;
+    display: none;
+  }
+  
+  .form-setting_room-container.show{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .chat-app.hidden::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(1px); 
+    z-index: 9998;
+  }
+  .form-setting_room-container form{
+    width: 100%;
+  } 
+  .form-setting_room-container .setting-avt-nameroom{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 5px;
+  }
+  .img-avt-room{
+    object-fit: cover; 
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90px;
+    width: 90px;
+  }
+  
+  .img-avt-room img{
+    height: 100%;
+    width: auto;
+  }
+  
+  .btn-add-avt-room{
+    position: absolute;
+    background-color: white;
+    border-radius:50%;
+    height: 27px;
+    width: 27px;
+    top:70px;
+    right: 140px;
+    background-color: #d8d8d8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btn-add-avt-room i{
+    font-size: 20px;
+  }
+  
+  .form-setting_room-container .cancel-btn,
+  .form-setting_room-container .update-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .form-setting_room-container .buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .form-setting_room-container .cancel-btn {
+    background-color: #ff0000;
+    color: white;
+  }
+  .form-setting_room-container .update-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  .form-setting_room-container .input-name-group{
+    text-align: center;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+    background: #f2f2f285;
+    padding: 8px;
+  }
+  
+  .form-setting_room-container .input-name-group:focus{
+    border: none;
+    outline: none;
+    
   }

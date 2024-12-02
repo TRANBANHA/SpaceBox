@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\Web\AccountController;
 use App\Http\Controllers\Web\Admin\AdminController;
 use App\Http\Controllers\Web\HomeController;
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 // Liên kết tới trang chưa login
 Route::get('/', [HomeController::class, 'landingPage'])->name('spacebox.landingpage');
+
 
 
 // Account
@@ -20,10 +22,18 @@ Route::group(['prefix' => 'account', 'as' => 'account.'], function(){
     Route::get('/login', [AccountController::class, 'loginForm'])->name('login');
     Route::post('/login',[AccountController::class, 'loginAction'])->name('login.auth');
 
+    //Login Google
+    Route::get('auth/google', [GoogleController::class, 'googleLogin'])->name('auth.google');
+    Route::get('auth/google/callback', [GoogleController::class, 'googleAuthentication']);
+   
+
+
     Route::get('/logout', [AccountController::class, 'logoutAction'])->name('logout');
 
     Route::get('/reset-password', [AccountController::class, 'forgotPassForm'])->name('forgotPassForm');
     Route::post('/reset-password', [AccountController::class, 'sendEmailResetPass'])->name('sendResetPass');
+
+
 });
 
 
@@ -76,6 +86,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'check_admin' ,'as' => 'admin
     Route::patch('/unpinMess/{message_id}', [HomeController::class, 'unpinnedMessage'])->name('chat.unpinMess');
 
     Route::delete('/deleteMess/{message_id}', [HomeController::class, 'deleteMessage'])->name('chat.deleteMess');
+
+    
+    Route::patch('/chat/updateRoom', [HomeController::class, 'updateRoom'])->name('userUpdateRoom');
 });
 
 
@@ -96,6 +109,10 @@ Route::group(['prefix' => 'spacebox', 'middleware' => 'check_user' ,'as' => 'spa
     
     Route::delete('/deleteMess/{message_id}', [HomeController::class, 'deleteMessage'])->name('chat.deleteMess');
 
+    Route::patch('/updateProfile', [AccountController::class, 'updateProfile'])->name('updateProfile');   
+    Route::put('/updatePass', [AccountController::class, 'updatePass'])->name('updatePass');
+
+    Route::patch('/chat/updateRoom', [HomeController::class, 'updateRoom'])->name('userUpdateRoom');
 
 });
 

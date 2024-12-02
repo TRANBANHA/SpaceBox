@@ -200,3 +200,53 @@ form .text h3 a:hover{
 }
 
 
+.btn-login-ser{
+  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-shared {
+  width: 160px;
+  font-weight: bold;
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-shared:hover {
+  transform: scale(1.05);
+}
+
+.btn-google {
+  background-color: #d82800;
+  padding: 12px 28px;
+}
+
+.btn-google:hover {
+  background-color: #ff542a;
+  
+}
+
+.btn-facebook {
+  background-color: #1877f2;
+  padding: 12px 22px;
+}
+
+.btn-facebook:hover {
+  background-color: #448aff;
+}
+
+.btn-google:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #3182ce;
+}
+
+.custom-icon {
+  font-size: 30px; /* Tăng kích thước biểu tượng */
+  margin-right: 15px; /* Khoảng cách giữa biểu tượng và chữ */
+}

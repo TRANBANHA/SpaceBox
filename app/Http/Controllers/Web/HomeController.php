@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Account\AddRoomRequest;
 use App\Http\Requests\Web\Account\SendFileRequest;
 use App\Http\Requests\Web\Account\SendMessRequest;
+use App\Http\Requests\Web\Account\UpdateRoomUserRequest;
 use App\Models\Room;
 use App\Models\User;
 use App\Services\MessageService;
@@ -58,16 +59,22 @@ class HomeController extends Controller
                 'content' => 'Tài khoản của bạn đã bị khoá hoặc vô hiệu hoá'
             ]);
         }
-        $user_id = Auth::id();
+        $user = Auth::user();
+
+
 
         $listUsers = $this->userService->getList();
         // Lấy danh sách các phòng mà người dùng tham gia
-        $rooms = $this->roomService->getDefaultRoom($user_id);
+        $rooms = $this->roomService->getDefaultRoom($user->user_id);
+        //Lấy phòng có tin nhắn mới nhất
+        $roomFirst = $room_id ? $this->roomService->getRoomId($room_id) : $rooms->first();
+        
 
         if($rooms != null){
             foreach ($rooms as $room) {
                 $messages = $this->getMessagesInRoom($room->room_id);
                 $latestMess = $messages->where('room_id', $room->room_id)->sortByDesc('created_at')->first();
+
                 if($latestMess){
                     $room->latestMess = $latestMess->content;
                     $room->latestMessTime = $latestMess->created_at;
@@ -97,6 +104,8 @@ class HomeController extends Controller
                 }
             }
             return view('home.chat', [
+                'user' => $user,
+                'roomFirst' => $roomFirst,
                 'room_id' => $room_id,
                 'listUsers'=> $listUsers, 
                 'rooms' => $rooms, 
@@ -107,7 +116,9 @@ class HomeController extends Controller
 
         // Nếu không có phòng, trả về trang chat mà không có tin nhắn
         return view('home.chat', [
-            'room_id' => 0,
+            'user' => $user,
+            'roomFirst' => $roomFirst,
+            'room_id' => $room_id,
             'listUsers'=> $listUsers, 
             'rooms' => $rooms, 
             'userInRooms' => [], 
@@ -159,7 +170,7 @@ class HomeController extends Controller
             return redirect()->route(Auth::user()->role_id==1 ? 'admin.home.chat' : 'spacebox.home.chat', $room->room_id)->with('chat-success', 'Thêm phòng chat thành công');
         }
 
-        return redirect()->back()->with('error', 'Thêm phòng chat không thành công');
+        return redirect()->back()->with('chat-error', 'Thêm phòng chat không thành công');
 
     }
 
@@ -244,7 +255,7 @@ class HomeController extends Controller
                 $request['content'] = $file->getClientOriginalName();
                 $request['file_mess'] = $uploadedFile;
             } else {
-                return redirect()->back()->with('error', 'Tải file không thành công');
+                return redirect()->back()->with('chat-error', 'Tải file không thành công');
             }
         }
         $message = $this->messageService->createFileMessage($request);
@@ -253,10 +264,10 @@ class HomeController extends Controller
         if($message){
             $event = $this->eventSendMess($message);
             if($event){
-                return redirect()->back();
+                return redirect()->back()->with('chat-success', 'Gửi file thành công');
             }
         }
-        return redirect()->back()->with('error', 'Gửi file không thành công');
+        return redirect()->back()->with('chat-error', 'Gửi file không thành công');
         // dd($message);
     }
     
@@ -270,7 +281,7 @@ class HomeController extends Controller
         if($message){
             $event = $this->eventSendMess($message);
             if($event){
-                return redirect()->back();
+                return redirect()->back()->with('chat-success', 'Gửi tin nhắn thành công');
             }
         }
     }
@@ -309,5 +320,31 @@ class HomeController extends Controller
     }
 
 
-   
+    public function updateRoom(UpdateRoomUserRequest $updateRoomUserRequest){
+        $request = $updateRoomUserRequest->validated();
+        $room = $this->roomService->getRoomId($request['room_id']);
+
+       
+        $room->room_name = $request['room_name'];
+
+        if($updateRoomUserRequest->hasFile('fileImg_room')){
+            if ($room->avt_path) {
+                Cloudinary::destroy($room->avt_path);
+            }
+
+            $avtUploadFile = Cloudinary::upload($updateRoomUserRequest->file('fileImg_room')->getRealPath())->getSecurePath();
+
+
+            if ($avtUploadFile) {
+                $room->avt_path = $avtUploadFile;
+            } else {
+                return redirect()->back();
+            }
+        }
+
+        $room->save();
+
+        return redirect()->back();
+
+    }
 }

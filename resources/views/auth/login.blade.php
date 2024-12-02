@@ -35,6 +35,16 @@
                 <div class="text">
                     <h3>Chưa có tài khoản? <a href="{{ route('account.register') }}">Đăng ký ngay</a></h3>
                 </div>
+                <div class="btn-login-ser flex-row">
+                    <a href="{{ route('account.auth.google') }}" class="btn-shared btn-google">
+                        <i class='bx bxl-google custom-icon mr-3'></i>
+                        Google
+                    </a>
+                    <a href="#" class="btn-shared btn-facebook">
+                        <i class='bx bxl-facebook custom-icon mr-3'></i>
+                        Facebook
+                    </a>
+                </div>
             </form>
         </div>
         <div class="content-demo">

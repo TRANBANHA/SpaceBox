@@ -15,11 +15,110 @@
                 </div>
                 <nav class="nav_menu">
                     <a href="#"><i class='bx bx-message-rounded-dots' ></i></a>
-                    <a href="#"><i class='bx bxs-user-rectangle'></i></a>
-                    <a href="#"><i class='bx bx-cog' ></i></a>   
-                    @if (Auth::user()->role_id == 1)
-                        <a href="{{ route('admin.index') }}"><i class='bx bxs-user-account'></i></a>
+                    @if (Auth::user()->role_id != 1)
+                        <div class="setting">
+                            <a id="btn-setting"  href="#"><i class='bx bx-cog' ></i></a> 
+                            <div id="option-setting" class="option-setting">
+                                <ul>
+                                    <button class="btn-option-setting btn_setting-inf" id="btn_setting-inf">Thông tin tài khoản</button>
+                                    <button class="btn-option-setting btn_setting-pass" id="btn_setting-pass">Đổi mật khẩu</button>
+                                </ul>
+                            </div>
+
+                            <div class="form-setting-container" id="form-setting-inf">
+                                <h3>Thông tin tài khoản</h3>
+                                <form class="profiles" action="{{ route('spacebox.updateProfile') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <div class="setting-avt-name">
+                                        <div class="img-avt">
+                                            <img id="profileImage"  src="{{ $user->img_path }}" alt="">
+                                            
+                                            <input type="file" name="fileImg" id="avatarInput" style="display: none;" onchange="previewImage(event)">
+                                            <button class="btn-add-avt" type="button" onclick="document.getElementById('avatarInput').click();">
+                                                <i class='bx bxs-camera'></i>                   
+                                            </button>
+                                        </div>                
+                                        <input class="name-user" type="text" name="username" value="{{ $user->username }}" required>
+
+                                    </div>
+
+                                    <div class="setting-inf">
+                                        <div class="setting-gender">
+                                            <span>Giới tính:</span>
+                                            <div class="box-gd flex-row">
+                                            <input id="gender_male" name="gender" type="radio" value="1" {{ $user->gender ? 'checked' : '' }}>
+                                            <label for="gender_male">Nam</label>
+                                            </div>
+                                            <div class="box-gd flex-row">
+                                            <input id="gender_female" name="gender" type="radio" value="0" {{ $user->gender ? '' : 'checked' }}>
+                                            <label for="gender_female">Nữ</label>
+                                            </div>
+                                        </div>
+                                        <div class="inp_text email">
+                                            <span>Email:</span>
+                                            <input class="inp_email" type="text" name="email" placeholder="{{ $user->email }}">
+                                        </div>
+                                        <div class="inp_text note">
+                                            <span>Note:</span>
+                                            <textarea class="inp_note" name="description" cols="40" rows="4" >{{ $user->description }}</textarea>
+                                        </div>  
+                                        
+                                    </div>                         
+                            
+                                    <div class="buttons">
+                                        <button type="reset" class="cancel-btn" id="cancel-setting-inf-btn">Hủy</button>
+                                        <button type="submit" class="update-btn" >Cập nhật</button>
+                                    </div>
+                                    
+                                </form>  
+
+                            </div>
+                            <div class="form-setting-container {{ $errors->any() || session('success') ? 'show' : '' }}" id="form-setting-pass">
+                                <h3>Cập nhật mật khẩu</h3>
+                                
+                                <form class="profiles" action="{{ route('spacebox.updatePass') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+                                    
+                                    <div class="setting-pass">
+                                        <div class="inp_text passOld">
+                                            <span>Mật khẩu cũ:</span>
+                                            <input class="input_pass passOld" type="text" name="passwordOld">
+                                            @error('passwordOld')
+                                                <small id="passwordOldError" class="auth-error" style="color: red">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                        <div class="inp_text passNew">
+                                            <span>Mật khẩu mới:</span>
+                                            <input class="input_pass passnew" type="text" name="password">
+                                        </div>
+                                        <div class="inp_text passConfi">
+                                            <span>Nhập lại mật khẩu:</span>
+                                            <input class="input_pass passOld" type="text" name="password_confirmation">
+                                            @error('password')
+                                                <small id="password_confirmationError" class="auth-error" style="color:red;">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                        @if(session('success'))
+                                            <span id="notification-success" class="auth-notification" style="color: green;text-align: center;display: block;">Đổi mật khẩu thành công</span>
+                                        @endif
+                                    </div>
+                                    <div class="buttons">
+                                        <button type="reset" class="cancel-btn" id="cancel-setting-pass-btn">Hủy</button>
+                                        <button type="submit" class="update-btn" >Cập nhật</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                        </div>
                     
+                    @else
+                        <div class="setting" style="display: none;">
+                            <a id="btn-setting"  href="#"><i class='bx bx-cog' ></i></a> 
+                        </div>
+                        <a href="{{ route('admin.index') }}"><i class='bx bxs-user-account'></i></a>
                     @endif
                 </nav>
             </div>
@@ -110,22 +209,27 @@
         <!-- Chi tiết tin nhắn và người dùng -->
         <section class="chat-container">
             <header class="chat-header">
-                <div class="user-info">
-                    
-                    <img src="{{ Auth::user()->img_path }}" alt="User Avatar" class="user-avatar">
-                    <div>
-                        <span class="username">{{ Auth::user()->username }}</span>
-                        <p class="status">Online</p>
+                    @if($roomFirst)
+                    <div class="user-info">
+                        
+                        <img src="{{ $roomFirst->avt_path }}" alt="User Avatar" class="user-avatar">
+                        <div>
+                            <span class="username">{{ $roomFirst->room_name }}</span>
+                            <p class="status">Online</p>
+                        </div>
                     </div>
-                </div>
-                @if ($messages)
-                    <div class="call-Information">
-                        <a href="#"><i class='bx bxs-phone-call'></i></a>
-                        <a href="#"><i class='bx bxs-video'></i></a>
-                        <a href="#" id="toggleDirectory" ><i class='bx bxs-error-circle'></i></a>
-                    </div>         
-                @endif  
-            </header>
+                    @if ($messages)
+                        <div class="call-Information">
+                            <a href="#"><i class='bx bxs-phone-call'></i></a>
+                            <a href="#"><i class='bx bxs-video'></i></a>
+                            <a href="#" id="toggleDirectory" ><i class='bx bxs-error-circle'></i></a>
+                        </div>         
+                    @endif  
+                    @else
+                        <p style="width: 100%;text-align: center;color: #ccc;">Không có phòng chat nào</p>
+                    @endif
+                </header>
+            
 
             
 
@@ -272,41 +376,72 @@
                         <input id="user_id" type="hidden" name="user_id" value="{{ Auth::user()->user_id }}">
                         <input id="room_id" type="hidden" name="room_id" value="{{ $room_id ?? 0 }}">
 
-                        <input name="content" type="text" class="input-box" placeholder="Aa">
+                        <input name="content" type="text" class="input-box" placeholder="Aa" required>
                         <div class="right-icons">
                             <button class="icon-btn" type="submit"><i class='bx bxs-send'></i></button>               
                         </div>
                     </form>
                    
             </footer>
-            @endif
+            
         </section>
 
         <!-- Directory bên phải -->
         <aside class="directory" id="directory">
             <div class="community-details">
-                    <h1>Details Community</h1>
+                    <!-- <h1>Thông tin nhóm</h1> -->
                 <div class="profile-section">
                     <div class="img">
-                        <img src="{{ url('assets/images/male.png') }}" alt="Logo">
+                        <img src="{{ $roomFirst->avt_path }}" alt="Logo">
                     </div>
-                    <h2>Dribbble & Behance...</h2>
+                    <h2>{{ $roomFirst->room_name }}</h2>
                     <div class="member-online">
-                        <p>1232 Members</p>
-                        <p><span></span>200 Online</p>
-                    
+                        <p>{{ count($userInRooms) }} Members</p>
+                        <p><span>Online</span></p>
                     </div>
                     <div class="actions">
                         <button class="action-btn">
                             <i class='bx bxs-bell-ring'></i>
-                            <span>Unmute</span>
+                            <span>Im lặng</span>
                         </button>
 
                         <button class="action-btn">
                             <i class='bx bx-log-in' ></i>
-                            <span>Leave</span>
+                            <span>Rời nhóm</span>
                         </button>
-                        
+                        <div class="setting_room">
+                            @if ($roomFirst->created_by == Auth::user()->user_id) 
+                                <button class="action-btn" id="action-btn-room">
+                                    <i class='bx bxs-cog'></i>
+                                    <span>Setting</span>
+                                </button>
+                            @endif
+                            <div class="form-setting_room-container" id="form-setting-room">
+                                <h3>Thông tin room</h3>
+                                <input type="hidden" id="created_by" value="{{ $roomFirst->created_by }}">                                      
+                                <form class="profile_room" action="{{ Auth::user()->role_id == 1 ? route('admin.userUpdateRoom') : route('spacebox.userUpdateRoom') }}"  method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <input class="room_id"  type="text" name="room_id" value="{{ $roomFirst->room_id }}" style="display:none;">
+                                    <div class="setting-avt-nameroom">
+                                        <div class="img-avt-room">
+                                            <img id="Room_Image"  src="{{ $roomFirst->avt_path }}" alt="">
+                                            
+                                            <input type="file" name="fileImg_room" id="avatar_Room_Input" style="display: none;" onchange="previewImageRoom(event)">
+                                            <button class="btn-add-avt-room" type="button" onclick="document.getElementById('avatar_Room_Input').click();">
+                                                <i class='bx bxs-camera'></i>                   
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input class="input-name-group" type="text" name="room_name" value="{{ $roomFirst->room_name }}" required>
+                                    <div class="buttons">
+                                        <button type="reset" class="cancel-btn" id="cancel-setting-room-btn">Hủy</button>
+                                        <button type="submit" class="update-btn">Cập Nhật</button>
+                                    </div>
+                                </form>  
+                            </div>   
+                        </div>
                     </div>
                 </div>
                 <ul class="menu">
@@ -330,9 +465,6 @@
                     <div class="members-section_buttom">
                         <a href="#"  id="add-members" ><i id='icon_add' class='bx bxs-user-plus'></i>Add Members</a>
                         <a></a>
-                        {{-- <div class="search-bar">
-                            <input type="text" placeholder="Search members..." />
-                        </div> --}}
                         <ul class="members-list">
                             @foreach ($userInRooms as $userInRoom)
                                 <li class="member">
@@ -383,38 +515,7 @@
                         <div class="media-content">
                             <img src="{{ url('assets/images/male.png') }}" alt="">
                         </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
-                        <div class="media-content">
-                            <img src="{{ url('assets/images/male.png') }}" alt="">
-                        </div>
+                        
                     </div>
                     
                 </div>
@@ -447,7 +548,7 @@
             </div>
 
         </aside>
-        
+        @endif
     </div>
 </x-my-layout>
 
@@ -473,8 +574,9 @@
         const chat_app = document.getElementById('chat-app');
         chat_app.classList.toggle('hidden');
         form_add.classList.toggle('show');
-        event.stopPropagation();
+        // event.stopPropagation();
     });
+
     document.getElementById('cancel-btn').addEventListener('click', function () {
         const form_add = document.getElementById('form-add');
         const chat_app = document.getElementById('chat-app');
@@ -486,6 +588,105 @@
         }
 
     });
+
+    //MỞ OPTION SETTING
+    const roleCurrentPage = document.getElementById('roleCurrent').value;
+    if(roleCurrentPage != 1){
+        document.getElementById('btn-setting').addEventListener('click', function() {
+        // event.preventDefault(); 
+
+        const optionSetting = document.getElementById('option-setting');
+        
+        optionSetting.classList.toggle('show'); 
+        // event.stopPropagation();
+        });
+
+        // Đóng menu khi click ra ngoài
+        document.addEventListener('click', function() {
+            var optionSetting = document.getElementById('option-setting');
+
+            if (!event.target.closest('#btn-setting') && !event.target.closest('#option-setting')) {
+                optionSetting.classList.remove('show'); 
+            }
+        });
+
+        // MỞ FORM SETTING INF
+        document.getElementById('btn_setting-inf').addEventListener('click', function () {
+            const form_setting_inf = document.getElementById('form-setting-inf');
+            const chat_app = document.getElementById('chat-app');
+            const optionSetting = document.getElementById('option-setting');
+
+            optionSetting.classList.remove('show'); 
+            chat_app.classList.toggle('hidden');
+            form_setting_inf.classList.toggle('show');
+            // event.stopPropagation();
+        });
+
+        document.getElementById('cancel-setting-inf-btn').addEventListener('click', function () {
+            const form_setting_inf = document.getElementById('form-setting-inf');
+            const chat_app = document.getElementById('chat-app');
+            if (form_setting_inf.classList.contains('show')) {
+                form_setting_inf.classList.remove('show');
+            }
+            if (chat_app.classList.contains('hidden')) {
+                chat_app.classList.remove('hidden');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded',function(){
+            const chat_app = document.getElementById('chat-app');
+            const form_setting_pass = document.getElementById('form-setting-pass');
+
+            if (form_setting_pass.classList.contains('show')) {
+                chat_app.classList.add('hidden');
+            }
+
+            if ($('#passwordOldError').length) {
+                $('#passwordOldError').delay(3000).fadeOut();
+            }
+            if ($('#password_confirmationError').length) {
+                $('#password_confirmationError').delay(3000).fadeOut();
+            }
+            if ($('#notification-success').length) {
+                $('#notification-success').delay(3000).fadeOut();
+            }
+        })
+
+        //MỞ FORM UPDATE PASSWORD
+        document.getElementById('btn_setting-pass').addEventListener('click',function(){
+            const chat_app = document.getElementById('chat-app');
+            const form_setting_pass = document.getElementById('form-setting-pass');
+            const optionSetting = document.getElementById('option-setting');
+
+            optionSetting.classList.remove('show'); 
+            chat_app.classList.toggle('hidden');
+            form_setting_pass.classList.toggle('show');
+            // event.stopPropagation();
+        });
+
+        document.getElementById('cancel-setting-pass-btn').addEventListener('click', function () {
+            const form_setting_pass = document.getElementById('form-setting-pass');
+            const chat_app = document.getElementById('chat-app');
+            if (form_setting_pass.classList.contains('show')) {
+                form_setting_pass.classList.remove('show');
+            }
+            if (chat_app.classList.contains('hidden')) {
+                chat_app.classList.remove('hidden');
+            }
+        });
+
+        function previewImage(event) {
+          var reader = new FileReader();
+          reader.onload = function() {
+            var output = document.getElementById('profileImage');
+            output.src = reader.result;
+          }
+          reader.readAsDataURL(event.target.files[0]);
+        };
+    }
+
+
+   
 
 
     // PLUS
@@ -518,19 +719,12 @@
             console.log('Chưa chọn file');
         }
     }
-    // document.getElementById('fileInput').addEventListener('change', function () {
-    //     const file = this.files[0];
-    //     if (file) {
-    //         console.log('File được chọn:', file.name);
-    //         // Thực hiện các hành động khác, ví dụ upload file
-    //     }
-    // });
 
     
 
     
-    document.getElementById('toggleDirectory').addEventListener('click', function (event) {
-        event.preventDefault(); 
+    document.getElementById('toggleDirectory').addEventListener('click', function () {
+        // event.preventDefault(); 
         const directory = document.getElementById('directory');
         const directory_resources = document.getElementById('directory_resources');
         if(directory_resources.classList.contains('show')){
@@ -540,8 +734,8 @@
         }
     });
 
-    document.getElementById('btn_resources').addEventListener('click', function (event) {
-        event.preventDefault(); 
+    document.getElementById('btn_resources').addEventListener('click', function () {
+        // event.preventDefault(); 
         const directory_resources = document.getElementById('directory_resources');
         const directory = document.getElementById('directory');
 
@@ -645,6 +839,38 @@
             }
         }
     });
+
+    const userCurrentRoom = document.getElementById('userCurrent').value;
+    const created_by =document.getElementById('created_by').value;
+
+    if(created_by == userCurrentRoom){
+        function previewImageRoom(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('Room_Image');
+            output.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);  
+        };
+        document.getElementById('action-btn-room').addEventListener('click', function () {
+            const form_setting_room = document.getElementById('form-setting-room');
+            const chat_app = document.getElementById('chat-app');
+            chat_app.classList.toggle('hidden');
+            form_setting_room.classList.toggle('show');
+            event.stopPropagation();
+        });
+
+        document.getElementById('cancel-setting-room-btn').addEventListener('click', function () {
+            const form_setting_room = document.getElementById('form-setting-room');
+            const chat_app = document.getElementById('chat-app');
+        if (form_setting_room.classList.contains('show')) {
+            form_setting_room.classList.remove('show');
+        }
+        if (chat_app.classList.contains('hidden')) {
+            chat_app.classList.remove('hidden');
+        }
+        });
+    }   
     
 </script>
 
