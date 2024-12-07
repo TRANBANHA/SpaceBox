@@ -16,9 +16,10 @@ use App\Models\User;
 use App\Services\RoleService;
 use App\Services\RoomService;
 use App\Services\UserService;
-use Auth;
+
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {

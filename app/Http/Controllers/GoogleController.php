@@ -5,18 +5,19 @@ namespace App\Http\Controllers;
 use App\Mail\ResetPassword;
 use App\Models\User;
 use App\Services\RoomService;
-use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
-use Str;
 
 class GoogleController extends Controller
 {
 
     protected $roomService;
-    public function __construct(RoomService $roomService){
+    public function __construct(RoomService $roomService)
+    {
         $this->roomService = $roomService;
     }
 
@@ -40,11 +41,11 @@ class GoogleController extends Controller
                     return redirect()->route('admin.index');
                 }
                 $room = $this->roomService->getDefaultRoom($finduser->user_id)->first();
-                if($room){
+                if ($room) {
                     return redirect()->route('spacebox.home.chat', $room->room_id);
                 }
                 return redirect()->route('spacebox.home.chat', 0);
-                
+
                 // return redirect()->intended('dashboard');
             } else {
                 $newPassword = Str::random(8);
@@ -58,7 +59,7 @@ class GoogleController extends Controller
                 ]);
 
 
-                Mail::to($newUser['email'])->send(new ResetPassword($newUser,$newPassword));
+                Mail::to($newUser['email'])->send(new ResetPassword($newUser, $newPassword));
 
                 Auth::login($newUser);
                 // Phân quyền dựa trên role_id

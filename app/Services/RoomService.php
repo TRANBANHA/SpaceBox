@@ -2,19 +2,20 @@
 
 
 namespace App\Services;
+
 use App\Models\Room;
 use App\Models\RoomRole;
-use Auth;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RoomService
 {
-    
+
     protected $room;
     protected $roomRole;
 
-    
-    public function __construct(Room $room, RoomRole $roomRole)   
+
+    public function __construct(Room $room, RoomRole $roomRole)
     {
         $this->room = $room;
         $this->roomRole = $roomRole;
@@ -39,11 +40,11 @@ class RoomService
         $newRoom = $this->room->create($room);
 
         if (isset($param['members']) && count($param['members']) > 0) {
-            
+
             $newRoom->userId = $param['members'];
 
             $this->addRoomRoleByUser($newRoom);
-        }else{
+        } else {
             $this->addRoomRoleByUser($newRoom);
         }
         return $newRoom;
@@ -63,14 +64,14 @@ class RoomService
             foreach ($room['userId'] as $user_id) {
                 // Xác định role của người dùng
                 $role = $user_id == Auth::user()->user_id ? 2 : 3; // Nếu là người tạo phòng (admin), gán role = 2 (admin)
-                
+
                 // Tạo room role cho từng user
                 $roomRole = [
                     'room_id' => $room['room_id'],
                     'role_id' => $role,
                     'user_id' => $user_id,
                 ];
-                
+
                 // Lưu vào cơ sở dữ liệu
                 $this->roomRole->create($roomRole);
             }
@@ -78,14 +79,13 @@ class RoomService
             // Nếu chỉ có một người, gán vai trò admin (role = 2)
             $roomRole = [
                 'room_id' => $room['room_id'],
-                'role_id' => 2,  
-                'user_id' => $room['created_by'], 
+                'role_id' => 2,
+                'user_id' => $room['created_by'],
             ];
-            
+
             // Lưu vào cơ sở dữ liệu
             $this->roomRole->create($roomRole);
         }
-
     }
 
 
@@ -98,8 +98,25 @@ class RoomService
         // Lấy danh sách các phòng và sắp xếp theo thời gian tin nhắn mới nhất hoặc ngày tạo phòng nếu không có tin nhắn
         $rooms = $this->room->whereIn('rooms.room_id', $roomIds)
             ->leftJoin('messages', 'rooms.room_id', '=', 'messages.room_id')
-            ->select('rooms.*', \DB::raw('COALESCE(MAX(messages.created_at), rooms.created_at) as latest_message_time')) // Nếu không có tin nhắn, dùng thời gian tạo phòng
-            ->groupBy('rooms.room_id')
+            ->select(
+                'rooms.room_id',
+                'rooms.room_name',
+                'rooms.avt_path',
+                'rooms.created_by',
+                'rooms.created_at',
+                'rooms.updated_at',
+                'rooms.deleted_at',
+                DB::raw('COALESCE(MAX(messages.created_at), rooms.created_at) as latest_message_time')
+            ) // Nếu không có tin nhắn, dùng thời gian tạo phòng
+            ->groupBy(
+                'rooms.room_id',
+                'rooms.room_name',
+                'rooms.avt_path',
+                'rooms.created_by',
+                'rooms.created_at',
+                'rooms.updated_at',
+                'rooms.deleted_at'
+            )
             ->orderByDesc('latest_message_time') // Sắp xếp theo tin nhắn mới nhất hoặc thời gian tạo phòng
             ->get();
 
@@ -115,7 +132,7 @@ class RoomService
         // if ($rooms->isEmpty()) {
         //     return null;
         // }
-        if($rooms == null){
+        if ($rooms == null) {
             $rooms = new Room();
             $rooms->room_id = 0;
         }
@@ -135,11 +152,9 @@ class RoomService
     {
         // Lấy tất cả các role_id của user trong phòng
         $rolesInRoom = $this->roomRole->where('room_id', $room_id)
-                                      ->where('user_id', $user_id)
-                                      ->pluck('role_id');   // Lấy tất cả các role_id
-    
+            ->where('user_id', $user_id)
+            ->pluck('role_id');   // Lấy tất cả các role_id
+
         return $rolesInRoom;
     }
-    
-
 }

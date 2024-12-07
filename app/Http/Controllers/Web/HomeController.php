@@ -12,6 +12,7 @@ use App\Http\Requests\Web\Account\SendMessRequest;
 use App\Http\Requests\Web\Account\UpdateRoomUserRequest;
 use App\Models\Room;
 use App\Models\User;
+use App\Models\UserInRoom;
 use App\Services\MessageService;
 use App\Services\RoomService;
 use App\Services\UserService;
@@ -26,13 +27,15 @@ class HomeController extends Controller
 
     protected $messageService;
 
-    public function __construct(RoomService $roomService, UserService $userService, MessageService $messageService){
+    public function __construct(RoomService $roomService, UserService $userService, MessageService $messageService)
+    {
         $this->roomService = $roomService;
         $this->userService = $userService;
         $this->messageService = $messageService;
     }
 
-    public function landingPage(){
+    public function landingPage()
+    {
         return view('home.landingpage');
     }
 
@@ -52,7 +55,7 @@ class HomeController extends Controller
 
     public function chat($room_id)
     {
-        if(Auth::user()->status == 0){
+        if (Auth::user()->status == 0) {
             Auth::logout();
             return redirect()->route('account.login')->with('errors', [
                 'title' => 'Đăng nhập không thành công',
@@ -68,21 +71,20 @@ class HomeController extends Controller
         $rooms = $this->roomService->getDefaultRoom($user->user_id);
         //Lấy phòng có tin nhắn mới nhất
         $roomFirst = $room_id ? $this->roomService->getRoomId($room_id) : $rooms->first();
-        
 
-        if($rooms != null){
+
+        if ($rooms != null) {
             foreach ($rooms as $room) {
                 $messages = $this->getMessagesInRoom($room->room_id);
                 $latestMess = $messages->where('room_id', $room->room_id)->sortByDesc('created_at')->first();
 
-                if($latestMess){
+                if ($latestMess) {
                     $room->latestMess = $latestMess->content;
                     $room->latestMessTime = $latestMess->created_at;
-                }else{
+                } else {
                     $room->latestMess = '...';
                     $room->latestMessTime = $room->created_at;
                 }
-                
             }
         }
 
@@ -92,24 +94,24 @@ class HomeController extends Controller
             $userInRooms = $this->getUsersWithRolesInRoom($room_id);
             // Sắp xếp theo quyền trong phòng chat
             $userInRooms = $userInRooms->sortBy('role_id');
-            
+
             $messages = $this->getMessagesInRoom($room_id);
 
             // Duyệt qua tin nhắn và kết hợp thông tin người gửi với tin nhắn
             foreach ($messages as $message) {
                 $userSendMess = $userInRooms->where('user_id', $message->user_id)->first();
                 if ($userSendMess) {
-                    $message->username = $userSendMess->username; 
-                    $message->img_path = $userSendMess->img_path; 
+                    $message->username = $userSendMess->username;
+                    $message->img_path = $userSendMess->img_path;
                 }
             }
             return view('home.chat', [
                 'user' => $user,
                 'roomFirst' => $roomFirst,
                 'room_id' => $room_id,
-                'listUsers'=> $listUsers, 
-                'rooms' => $rooms, 
-                'userInRooms' => $userInRooms, 
+                'listUsers' => $listUsers,
+                'rooms' => $rooms,
+                'userInRooms' => $userInRooms,
                 'messages' => $messages
             ]);
         }
@@ -119,9 +121,9 @@ class HomeController extends Controller
             'user' => $user,
             'roomFirst' => $roomFirst,
             'room_id' => $room_id,
-            'listUsers'=> $listUsers, 
-            'rooms' => $rooms, 
-            'userInRooms' => [], 
+            'listUsers' => $listUsers,
+            'rooms' => $rooms,
+            'userInRooms' => [],
             'messages' => []
         ]);
     }
@@ -129,7 +131,7 @@ class HomeController extends Controller
 
     public function getMessagesInRoom($roomId)
     {
-        $userId = Auth::id(); 
+        $userId = Auth::id();
 
         // Truy vấn tất cả tin nhắn trong phòng chat
         $messages = $this->messageService->getMessages($roomId);
@@ -146,16 +148,17 @@ class HomeController extends Controller
         return $messages;
     }
 
-    public function addRoom(AddRoomRequest $addRoomRequest){
+    public function addRoom(AddRoomRequest $addRoomRequest)
+    {
         $request = $addRoomRequest->validated();
 
         $room = $this->roomService->addRoom($request);
 
         $roomAdd = Room::where('room_id', $room->room_id)->first();
 
-        if($roomAdd){
+        if ($roomAdd) {
             $userInRoom = $this->roomService->getUsersInRoom($roomAdd->room_id)->toArray();
-            
+
             $roomData = [
                 'room_id' => $roomAdd->room_id,
                 'room_name' => $roomAdd->room_name,
@@ -166,25 +169,25 @@ class HomeController extends Controller
             ];
 
             broadcast(new AddUserRoom($roomData));
-            
-            return redirect()->route(Auth::user()->role_id==1 ? 'admin.home.chat' : 'spacebox.home.chat', $room->room_id)->with('chat-success', 'Thêm phòng chat thành công');
+
+            return redirect()->route(Auth::user()->role_id == 1 ? 'admin.home.chat' : 'spacebox.home.chat', $room->room_id)->with('chat-success', 'Thêm phòng chat thành công');
         }
 
         return redirect()->back()->with('chat-error', 'Thêm phòng chat không thành công');
-
     }
 
-    public function eventSendMess($message){
+    public function eventSendMess($message)
+    {
         $userSendMess = User::find($message->user_id);
         if ($userSendMess) {
-            $message->username = $userSendMess->username; 
-            $message->img_path = $userSendMess->img_path; 
+            $message->username = $userSendMess->username;
+            $message->img_path = $userSendMess->img_path;
         }
 
         $room = Room::where('room_id', $message->room_id)->first();
-        if($room != null){
+        if ($room != null) {
             $userInRoom = $this->roomService->getUsersInRoom($room->room_id)->toArray();
-        
+
             $roomData = [
                 'room_id' => $room->room_id,
                 'room_name' => $room->room_name,
@@ -192,13 +195,13 @@ class HomeController extends Controller
                 'latestMessTime' => $message->created_at->format('H:i'),
                 'avt_path' => $room->avt_path,
                 'userInRoom' => $userInRoom
-                
+
             ];
         }
         // dd($roomData);
-       
-        
-         // Chuẩn bị dữ liệu phát qua sự kiện
+
+
+        // Chuẩn bị dữ liệu phát qua sự kiện
         $messData = [
             'message_id' => $message->message_id,
             'user_id' => $message->user_id,
@@ -217,9 +220,9 @@ class HomeController extends Controller
         // dd($messData);
 
 
-        
-        broadcast(new ChatEvent($messData['room_id'],$messData));
-       
+
+        broadcast(new ChatEvent($messData['room_id'], $messData));
+
         broadcast(new IndexRoomEvent($roomData));
 
         return true;
@@ -229,26 +232,26 @@ class HomeController extends Controller
     {
         $request = $sendFileRequest->validated();
 
-        if($sendFileRequest->hasFile('file_mess')){
+        if ($sendFileRequest->hasFile('file_mess')) {
 
             $file = $sendFileRequest->file('file_mess');
 
-            $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); 
-            $originalExtension = $file->getClientOriginalExtension(); 
-            $newFileName = $originalFileName . '.' . $originalExtension; 
+            $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $originalExtension = $file->getClientOriginalExtension();
+            $newFileName = $originalFileName . '.' . $originalExtension;
 
             $renamedFilePath = $file->move(
-                sys_get_temp_dir(), 
-                $newFileName     
+                sys_get_temp_dir(),
+                $newFileName
             );
-            
-    
-                // Xử lý upload raw files cho các loại file như .xls, .doc, .pdf
+
+
+            // Xử lý upload raw files cho các loại file như .xls, .doc, .pdf
             $uploadedFile = Cloudinary::upload($renamedFilePath->getRealPath(), [
                 'resource_type' => 'auto',
                 'public_id' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
                 'use_filename' => true, // Sử dụng tên file gốc
-                'unique_filename' => false, 
+                'unique_filename' => false,
             ])->getSecurePath();
 
             if ($uploadedFile) {
@@ -261,57 +264,61 @@ class HomeController extends Controller
         $message = $this->messageService->createFileMessage($request);
 
 
-        if($message){
+        if ($message) {
             $event = $this->eventSendMess($message);
-            if($event){
+            if ($event) {
                 return redirect()->back()->with('chat-success', 'Gửi file thành công');
             }
         }
         return redirect()->back()->with('chat-error', 'Gửi file không thành công');
         // dd($message);
     }
-    
 
 
-    public function sendMessage(SendMessRequest $sendMessRequest){
+
+    public function sendMessage(SendMessRequest $sendMessRequest)
+    {
         $request = $sendMessRequest->validated();
 
         $message = $this->messageService->createMessage($request);
         // dd($message);
-        if($message){
+        if ($message) {
             $event = $this->eventSendMess($message);
-            if($event){
+            if ($event) {
                 return redirect()->back()->with('chat-success', 'Gửi tin nhắn thành công');
             }
         }
     }
 
-    public function pinnedMessage($messageId){
+    public function pinnedMessage($messageId)
+    {
 
         $is_pinned = $this->messageService->pinnedMessage($messageId);
-       
+
         if ($is_pinned) {
             return redirect()->back()->with('chat-success', 'Đã ghim tin nhắn');
         }
 
         return redirect()->back()->with('chat-error', 'Không thể ghim tin nhắn');
     }
-    public function unpinnedMessage($messageId){
+    public function unpinnedMessage($messageId)
+    {
 
         $un_pinned = $this->messageService->unpinnedMessage($messageId);
-       
+
         if ($un_pinned) {
             return redirect()->back()->with('chat-success', 'Đã bỏ ghim tin nhắn');
         }
 
         return redirect()->back()->with('chat-error', 'Không thể bỏ ghim tin nhắn');
     }
-    
 
-    public function deleteMessage($messageId){
+
+    public function deleteMessage($messageId)
+    {
 
         $deleteMess = $this->messageService->deleteMessage($messageId);
-       
+
         if ($deleteMess) {
             return redirect()->back()->with('chat-success', 'Tin nhắn đã được thu hồi');
         }
@@ -320,14 +327,15 @@ class HomeController extends Controller
     }
 
 
-    public function updateRoom(UpdateRoomUserRequest $updateRoomUserRequest){
+    public function updateRoom(UpdateRoomUserRequest $updateRoomUserRequest)
+    {
         $request = $updateRoomUserRequest->validated();
         $room = $this->roomService->getRoomId($request['room_id']);
 
-       
+
         $room->room_name = $request['room_name'];
 
-        if($updateRoomUserRequest->hasFile('fileImg_room')){
+        if ($updateRoomUserRequest->hasFile('fileImg_room')) {
             if ($room->avt_path) {
                 Cloudinary::destroy($room->avt_path);
             }
@@ -345,6 +353,29 @@ class HomeController extends Controller
         $room->save();
 
         return redirect()->back();
+    }
 
+    //add thanh vien
+    public function addMembers(Request $request)
+    {
+        $roomId = $request->input('room_id');
+        $userIds = $request->input('user_ids', []);
+
+        foreach ($userIds as $userId) {
+            // Kiểm tra xem thành viên đã trong nhóm chưa
+            if (!UserInRoom::where('room_id', $roomId)->where('user_id', $userId)->exists()) {
+                UserinRoom::create([
+                    'room_id' => $roomId,
+                    'user_id' => $userId,
+                ]);
+            }
+        }
+
+        broadcast(new AddUserRoom([
+            'room_id' => $roomId,
+            'user_ids' => $userIds,
+        ]));
+
+        return redirect()->back()->with('success', 'Thành viên đã được thêm vào nhóm!');
     }
 }

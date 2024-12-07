@@ -457,14 +457,11 @@
                 </ul>
                 <div class="members-section">
                     <div class="members-section_top">
-                        <h3>1232 Members</h3>
+                        <p>{{ count($userInRooms) }} Members</p>
                         <button class="action-btn-search">
                             <i class='bx bx-search-alt' ></i>
                         </button>
                     </div>
-                    <div class="members-section_buttom">
-                        <a href="#"  id="add-members" ><i id='icon_add' class='bx bxs-user-plus'></i>Add Members</a>
-                        <a></a>
                         <ul class="members-list">
                             @foreach ($userInRooms as $userInRoom)
                                 <li class="member">
@@ -576,6 +573,8 @@
         form_add.classList.toggle('show');
         // event.stopPropagation();
     });
+
+
 
     document.getElementById('cancel-btn').addEventListener('click', function () {
         const form_add = document.getElementById('form-add');
